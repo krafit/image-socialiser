@@ -1,0 +1,208 @@
+/**
+ * Image Socialiser — settings screen styles.
+ *
+ * @package happyhappy\ImageSocialiser
+ */
+
+.settings_page_image-socialiser .form-table input[type="color"] {
+	block-size: 32px;
+	inline-size: 64px;
+	padding: 2px;
+}
+
+.settings_page_image-socialiser .image-socialiser-table {
+	margin-block: 4px 8px;
+	max-inline-size: 800px;
+}
+
+.settings_page_image-socialiser .image-socialiser-table th,
+.settings_page_image-socialiser .image-socialiser-table td {
+	padding: 10px 12px;
+	vertical-align: middle;
+}
+
+.settings_page_image-socialiser .image-socialiser-table .image-socialiser-media-preview {
+	max-inline-size: 60px;
+}
+
+.image-socialiser-media-field {
+	align-items: flex-start;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.image-socialiser-media-preview {
+	background: #fff;
+	block-size: auto;
+	border: 1px solid #c3c4c7;
+	border-radius: 2px;
+	max-inline-size: 100px;
+	padding: 2px;
+}
+
+.image-socialiser-media-actions {
+	align-items: center;
+	display: flex;
+	gap: 12px;
+}
+
+.image-socialiser-media-actions .image-socialiser-media-remove {
+	line-height: 2.15384615;
+}
+
+.settings_page_image-socialiser .image-socialiser-tools p.submit {
+	margin-block-end: 4px;
+	padding-block: 4px 0;
+}
+
+/* ---- 0.19.0: tabbed settings & Design Center ---- */
+.image-socialiser-status-card {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-left-width: 4px;
+	border-left-color: #00a32a;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	margin: 16px 0;
+	max-width: 800px;
+	padding: 12px 16px;
+}
+
+.image-socialiser-status-card:has(.image-socialiser-status-warn) {
+	border-left-color: #dba617;
+}
+
+.image-socialiser-status-card:has(.image-socialiser-status-bad) {
+	border-left-color: #d63638;
+}
+
+.image-socialiser-status-line {
+	font-size: 14px;
+	margin: 0 0 8px;
+}
+
+.image-socialiser-status-ok {
+	color: #00a32a;
+}
+
+.image-socialiser-status-warn {
+	color: #dba617;
+}
+
+.image-socialiser-status-bad {
+	color: #d63638;
+}
+
+.image-socialiser-status-card details > summary {
+	cursor: pointer;
+}
+
+.image-socialiser-design-columns {
+	display: flex;
+	gap: 32px;
+	align-items: flex-start;
+}
+
+.image-socialiser-design-main {
+	flex: 1 1 640px;
+	min-width: 0;
+}
+
+.image-socialiser-design-aside {
+	flex: 0 1 480px;
+	position: sticky;
+	top: 48px;
+	max-height: calc(100vh - 64px);
+	overflow-y: auto;
+}
+
+@media (max-width: 1100px) {
+	.image-socialiser-design-columns {
+		display: block;
+	}
+	
+	.image-socialiser-design-aside {
+		position: static;
+		max-height: none;
+	}
+}
+
+.image-socialiser-badge {
+	background: #f0f0f1;
+	border-radius: 10px;
+	display: inline-block;
+	font-size: 11px;
+	margin: 2px 0 0 4px;
+	padding: 1px 8px;
+	white-space: nowrap;
+}
+
+.image-socialiser-override-fieldset {
+	border-left: 4px solid #c3c4c7;
+	margin-top: 8px;
+	padding: 4px 0 4px 12px;
+}
+
+.image-socialiser-advanced pre {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	max-width: 800px;
+	overflow-x: auto;
+	padding: 12px 16px;
+}
+
+.image-socialiser-advanced p {
+	max-width: 800px;
+}
+
+/* ---- 0.19.0 beta.3: General tab intro ---- */
+.image-socialiser-intro {
+	align-items: flex-start;
+	display: flex;
+	gap: 32px;
+	margin: 16px 0 8px;
+	max-width: 1100px;
+}
+
+.image-socialiser-intro-text {
+	flex: 1 1 380px;
+	min-width: 0;
+}
+
+.image-socialiser-intro-text h2 {
+	margin-top: 0;
+}
+
+.image-socialiser-intro-text p {
+	font-size: 14px;
+	max-width: 560px;
+}
+
+.image-socialiser-intro-preview {
+	flex: 0 1 460px;
+	margin: 0;
+	min-width: 260px;
+}
+
+.image-socialiser-intro-preview svg {
+	border: 1px solid #c3c4c7;
+	border-radius: 2px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	display: block;
+	height: auto;
+	width: 100%;
+}
+
+.image-socialiser-intro-preview figcaption {
+	margin-top: 6px;
+}
+
+@media (max-width: 900px) {
+	.image-socialiser-intro {
+		display: block;
+	}
+	
+	.image-socialiser-intro-preview {
+		margin-top: 16px;
+	}
+}

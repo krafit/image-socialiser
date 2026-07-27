@@ -1,0 +1,62 @@
+{
+ "translation-revision-date": "2026-07-27 19:37+0000",
+ "generator": "image-socialiser build",
+ "domain": "messages",
+ "locale_data": {
+  "messages": {
+   "": {
+    "domain": "messages",
+    "plural-forms": "nplurals=2; plural=(n != 1);",
+    "lang": "de"
+   },
+   "A manual image override is set; it replaces the generated image.": [
+    "Ein eigenes Bild ist festgelegt; es ersetzt das generierte Bild."
+   ],
+   "Change image override": [
+    "Eigenes Bild ändern"
+   ],
+   "Generating …": [
+    "Wird generiert …"
+   ],
+   "Generation failed": [
+    "Generierung fehlgeschlagen"
+   ],
+   "Generation queued …": [
+    "Generierung in der Warteschlange …"
+   ],
+   "Image generated": [
+    "Bild generiert"
+   ],
+   "Image title": [
+    "Bildtitel"
+   ],
+   "Leave empty to use the post title.": [
+    "Leer lassen, um den Beitragstitel zu verwenden."
+   ],
+   "Leave empty to use the site-wide source.": [
+    "Leer lassen, um die Website-weite Quelle zu verwenden."
+   ],
+   "Regenerate image": [
+    "Bild neu generieren"
+   ],
+   "Remove": [
+    "Entfernen"
+   ],
+   "Set manual image override": [
+    "Eigenes Bild festlegen"
+   ],
+   "Social image": [
+    "Social-Media-Bild"
+   ],
+   "Social image preview": [
+    "Vorschau des Social-Media-Bildes"
+   ],
+   "Subtitle": [
+    "Untertitel"
+   ],
+   "View generated file": [
+    "Generierte Datei anzeigen"
+   ]
+  }
+ }
+}
