@@ -9,6 +9,11 @@ use happyhappy\ImageSocialiser\Multisite\Multisite;
 use happyhappy\ImageSocialiser\Template\Brand;
 use happyhappy\ImageSocialiser\Template\Theme_Support;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Custom font uploads.
  *
@@ -313,7 +318,7 @@ final class Custom_Fonts {
 	 * Handle the font deletion admin-post request.
 	 */
 	public static function handle_delete(): void {
-		if ( ! \current_user_can( 'manage_options' ) ) {
+		if ( ! \current_user_can( 'manage_options' ) || Multisite::is_locked( 'fonts' ) ) {
 			\wp_die( \esc_html__( 'You are not allowed to do that.', 'image-socialiser' ) );
 		}
 		
@@ -334,7 +339,9 @@ final class Custom_Fonts {
 	 * Handle the font upload admin-post request.
 	 */
 	public static function handle_upload(): void {
-		if ( ! \current_user_can( 'manage_options' ) ) {
+		// the settings page hides the form while the network owns the
+		// fonts section; the handler must not rely on that
+		if ( ! \current_user_can( 'manage_options' ) || Multisite::is_locked( 'fonts' ) ) {
 			\wp_die( \esc_html__( 'You are not allowed to do that.', 'image-socialiser' ) );
 		}
 		
@@ -347,7 +354,9 @@ final class Custom_Fonts {
 			self::redirect( $error );
 		}
 		
-		$label = \sanitize_text_field( (string) ( $_POST['image_socialiser_font_label'] ?? '' ) );
+		$label = \sanitize_text_field(
+			(string) \wp_unslash( $_POST['image_socialiser_font_label'] ?? '' )
+		);
 		
 		if ( $label === '' ) {
 			$label = \pathinfo( \sanitize_file_name( (string) $file['name'] ), \PATHINFO_FILENAME );
@@ -498,26 +507,70 @@ final class Custom_Fonts {
 			$suffix++;
 		}
 		
-		if ( ! \wp_mkdir_p( $directory ) ) {
+		$filesystem = self::get_filesystem();
+		
+		if ( $filesystem === null || ! \wp_mkdir_p( $directory ) ) {
 			return null;
+		}
+		
+		// Storage::ensure_directory() guards the parent; the fonts
+		// subdirectory needs its own
+		$guard_path = $directory . '/index.php';
+		
+		if ( ! $filesystem->exists( $guard_path ) ) {
+			$filesystem->put_contents(
+				$guard_path,
+				'<?php' . \PHP_EOL . '// silence is golden' . \PHP_EOL,
+				\FS_CHMOD_FILE
+			);
 		}
 		
 		$filename = $font_id . '-' . \substr( (string) \md5_file( $temporary_path ), 0, 8 ) . '.' . $extension;
 		$target = $directory . '/' . $filename;
-		$moved = \is_uploaded_file( $temporary_path )
-			? \move_uploaded_file( $temporary_path, $target ) // phpcs:ignore WordPress.PHP.NoSilencedErrors
-			: \copy( $temporary_path, $target );
+		// is_uploaded_file() keeps the guarantee move_uploaded_file()
+		// used to provide: only a genuine PHP upload is ever moved,
+		// anything else (WP-CLI, a design pack) is copied instead
+		$stored = \is_uploaded_file( $temporary_path )
+			? $filesystem->move( $temporary_path, $target, true )
+			: $filesystem->copy( $temporary_path, $target, true );
 		
-		if ( ! $moved ) {
+		if ( ! $stored ) {
 			return null;
 		}
 		
-		\chmod( $target, 0644 );
+		$filesystem->chmod( $target, \FS_CHMOD_FILE );
 		
 		return [
 			'file' => $filename,
 			'id' => $font_id,
 		];
+	}
+	
+	/**
+	 * Get the initialized WordPress filesystem abstraction.
+	 *
+	 * Font files are written through WP_Filesystem rather than the
+	 * raw PHP file functions, both because WordPress.org requires it
+	 * and because it respects the site's configured filesystem
+	 * method. Callers must handle null: on a host using an FTP or
+	 * SSH method without stored credentials, WP_Filesystem() cannot
+	 * initialize without prompting, and an upload fails cleanly
+	 * instead of writing through an unexpected path.
+	 *
+	 * @return	\WP_Filesystem_Base|null The filesystem, or null when unavailable
+	 */
+	private static function get_filesystem(): ?\WP_Filesystem_Base {
+		global $wp_filesystem;
+		
+		if ( ! $wp_filesystem instanceof \WP_Filesystem_Base ) {
+			require_once \ABSPATH . 'wp-admin/includes/file.php';
+			
+			if ( ! \WP_Filesystem() ) {
+				return null;
+			}
+		}
+		
+		return $wp_filesystem instanceof \WP_Filesystem_Base ? $wp_filesystem : null;
 	}
 	
 	/**
@@ -572,6 +625,11 @@ final class Custom_Fonts {
 			return false;
 		}
 		
+		// WP_Filesystem has no partial-read API — get_contents() would
+		// pull an entire font file into memory to inspect four bytes,
+		// and this runs for every Font Library face on admin screens,
+		// so the stream functions stay with this justification
+		// phpcs:disable WordPress.WP.AlternativeFunctions.file_system_operations_fopen, WordPress.WP.AlternativeFunctions.file_system_operations_fread, WordPress.WP.AlternativeFunctions.file_system_operations_fclose
 		$handle = \fopen( $path, 'rb' );
 		
 		if ( $handle === false ) {
@@ -580,6 +638,7 @@ final class Custom_Fonts {
 		
 		$magic = (string) \fread( $handle, 4 );
 		\fclose( $handle );
+		// phpcs:enable WordPress.WP.AlternativeFunctions.file_system_operations_fopen, WordPress.WP.AlternativeFunctions.file_system_operations_fread, WordPress.WP.AlternativeFunctions.file_system_operations_fclose
 		
 		return $magic === "\x00\x01\x00\x00" || $magic === 'OTTO';
 	}

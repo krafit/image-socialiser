@@ -5,6 +5,11 @@ namespace happyhappy\ImageSocialiser\Template;
 
 use WP_Post;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Registry for available templates.
  *

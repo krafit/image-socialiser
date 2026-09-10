@@ -6,6 +6,11 @@ namespace happyhappy\ImageSocialiser\Generation;
 use WP_Post;
 use WP_Term;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * A subject an Open Graph image is generated for.
  *

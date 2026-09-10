@@ -3,6 +3,11 @@ declare(strict_types=1);
 
 namespace happyhappy\ImageSocialiser\Seo;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Adapter for Rank Math.
  *
@@ -81,5 +86,16 @@ final class Rank_Math_Adapter implements Seo_Adapter {
 		$image = Seo_Handler::resolve_current_image();
 		
 		return $image['url'] ?? (string) $url;
+	}
+	
+	/**
+	 * @inheritdoc
+	 *
+	 * Rank Math stores the per-post Facebook image as
+	 * `rank_math_facebook_image_id` / `rank_math_facebook_image`.
+	 */
+	public function has_manual_image( int $post_id ): bool {
+		return (int) \get_post_meta( $post_id, 'rank_math_facebook_image_id', true ) > 0
+			|| (string) \get_post_meta( $post_id, 'rank_math_facebook_image', true ) !== '';
 	}
 }

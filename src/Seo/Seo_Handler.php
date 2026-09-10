@@ -8,6 +8,11 @@ use happyhappy\ImageSocialiser\Generation\Resolver;
 use happyhappy\ImageSocialiser\Generation\Subject;
 use WP_Post;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Detects the active SEO plugin and registers the matching adapter.
  *
@@ -90,6 +95,47 @@ final class Seo_Handler {
 	}
 	
 	/**
+	 * Check whether the active SEO plugin's own image wins for a post.
+	 *
+	 * An image set in the SEO plugin's own social panel expresses the
+	 * same intent as our manual override, so it takes precedence over
+	 * the generated one — the author picked a specific image for this
+	 * post. When this returns true the adapters pass the SEO plugin's
+	 * value through untouched, which also keeps that plugin's own
+	 * dimensions and alt text intact.
+	 *
+	 * @param	int	$post_id The post ID
+	 * @return	bool Whether to leave the SEO plugin's image alone
+	 */
+	public static function defers_to_seo_plugin( int $post_id ): bool {
+		$adapter = self::$active_adapter;
+		
+		if ( ! $adapter instanceof Seo_Adapter || $post_id <= 0 ) {
+			return false;
+		}
+		
+		/**
+		 * Filter whether an image set in the SEO plugin's own social
+		 * panel beats the generated image.
+		 *
+		 * Set to false to make the generated image always win, which
+		 * is how versions before 1.0.0 behaved.
+		 *
+		 * @param	bool	$respect Whether the SEO plugin's own image wins
+		 * @param	int	$post_id The post ID
+		 * @param	string	$adapter_id The active adapter identifier
+		 */
+		$respect = (bool) \apply_filters(
+			'image_socialiser_respect_seo_plugin_image',
+			true,
+			$post_id,
+			$adapter->get_id()
+		);
+		
+		return $respect && $adapter->has_manual_image( $post_id );
+	}
+	
+	/**
 	 * Resolve our image for the current singular front-end view.
 	 *
 	 * Memoized per post for the duration of the request, since SEO
@@ -101,6 +147,10 @@ final class Seo_Handler {
 		$subject = Subject::from_query();
 		
 		if ( $subject === null ) {
+			return null;
+		}
+		
+		if ( $subject->kind === 'post' && self::defers_to_seo_plugin( $subject->id ) ) {
 			return null;
 		}
 		

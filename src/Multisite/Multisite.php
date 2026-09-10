@@ -3,6 +3,11 @@ declare(strict_types=1);
 
 namespace happyhappy\ImageSocialiser\Multisite;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Multisite resolution helpers.
  *
@@ -58,7 +63,12 @@ final class Multisite {
 		$network_value = self::get_network_option( $section );
 		$locked = self::is_locked( $section );
 		
-		if ( $locked && $network_value !== null ) {
+		if ( $locked ) {
+			// a lock is authoritative even when the network never
+			// stored a value for the section: falling through to the
+			// site value here would silently unlock it, so the
+			// resolution yields null and every caller falls back to
+			// its own defaults
 			return [
 				'locked' => true,
 				'network' => true,

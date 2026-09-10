@@ -3,6 +3,11 @@ declare(strict_types=1);
 
 namespace happyhappy\ImageSocialiser\Generation;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Context image settings: taxonomies and special pages.
  *

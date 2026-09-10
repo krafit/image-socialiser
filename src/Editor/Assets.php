@@ -13,6 +13,11 @@ use happyhappy\ImageSocialiser\Template\Design;
 use happyhappy\ImageSocialiser\Template\Template_Registry;
 use WP_Post;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Loads the block editor assets.
  *

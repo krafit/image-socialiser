@@ -8,6 +8,7 @@ use happyhappy\ImageSocialiser\Generation\Generator;
 use happyhappy\ImageSocialiser\Generation\Scheduler;
 use happyhappy\ImageSocialiser\Generation\Post_Types;
 use happyhappy\ImageSocialiser\Generation\Storage;
+use happyhappy\ImageSocialiser\Rendering\Output_Format;
 use happyhappy\ImageSocialiser\Rendering\Renderer_Factory;
 use happyhappy\ImageSocialiser\Rendering\Rendering_Exception;
 use happyhappy\ImageSocialiser\Template\Binding;
@@ -15,6 +16,11 @@ use happyhappy\ImageSocialiser\Template\Template_Registry;
 use WP_CLI;
 use WP_CLI\Utils;
 use WP_Post;
+
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * WP-CLI commands.
@@ -169,22 +175,24 @@ final class Commands {
 		
 		$model = Template_Registry::resolve_for_post( $post );
 		$binding = new Binding( $post );
+		$format = Output_Format::resolve( $model, $binding );
 		
 		try {
-			$bytes = $renderer->render( $model, $binding );
+			$bytes = $renderer->render( $model, $binding, $format );
 		}
 		catch ( Rendering_Exception $exception ) {
 			WP_CLI::error( $exception->getMessage() );
 		}
 		
 		$storage = new Storage();
-		$hash = $storage->get_hash( $post, $model, $renderer->get_id() );
-		$path = $storage->save( $post->ID, $hash, $bytes );
+		$hash = $storage->get_hash( $post, $model, $renderer->get_id(), $format );
+		$path = $storage->save( $post->ID, $hash, $bytes, $format );
 		
 		if ( $path === '' ) {
 			WP_CLI::error( 'Could not write the image file.' );
 		}
 		
+		\update_post_meta( $post->ID, Generator::META_FORMAT, $format );
 		\update_post_meta( $post->ID, Generator::META_HASH, $hash );
 		\update_post_meta( $post->ID, Generator::META_STATUS, Generator::STATUS_READY );
 		\delete_post_meta( $post->ID, Generator::META_ERROR );
@@ -332,11 +340,16 @@ final class Commands {
 			. "literals or token references (token:text_color, token:heading_font, …).\n\n"
 			. "Full format reference:\n"
 			. "https://github.com/krafit/image-socialiser/wiki/Creating-designs\n";
+		// scaffolding writes to a developer-supplied path outside the
+		// site's managed directories, under WP-CLI where the direct
+		// method is the only one available anyway
+		// phpcs:disable WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
 		$written = \file_put_contents(
 			$directory . '/design.json',
 			(string) \wp_json_encode( $manifest, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES ) . "\n"
 		) !== false
 			&& \file_put_contents( $directory . '/README.md', $readme ) !== false;
+		// phpcs:enable WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
 		
 		if ( ! $written ) {
 			WP_CLI::error( \sprintf( 'Could not write into %s.', $directory ) );

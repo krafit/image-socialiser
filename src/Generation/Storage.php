@@ -5,11 +5,17 @@ namespace happyhappy\ImageSocialiser\Generation;
 
 use happyhappy\ImageSocialiser\Multisite\Multisite;
 use happyhappy\ImageSocialiser\Rendering\Fonts;
+use happyhappy\ImageSocialiser\Rendering\Output_Format;
 use happyhappy\ImageSocialiser\Template\Binding;
 use happyhappy\ImageSocialiser\Template\Brand;
 use happyhappy\ImageSocialiser\Template\Design;
 use happyhappy\ImageSocialiser\Template\Template_Model;
 use WP_Post;
+
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Storage for generated images: paths, hashing, writing and cleanup.
@@ -45,14 +51,20 @@ final class Storage {
 	 * @param	string	$renderer_id The renderer identifier
 	 * @return	string The content hash
 	 */
-	public function get_hash( WP_Post $post, Template_Model $model, string $renderer_id ): string {
+	public function get_hash(
+		WP_Post $post,
+		Template_Model $model,
+		string $renderer_id,
+		string $format = Output_Format::PNG
+	): string {
 		// bind the given object (it may carry unsaved changes), matching
 		// the pre-0.13.0 behavior exactly
 		return $this->compute_hash(
 			new Binding( $post ),
 			Subject::from_post( $post->ID ),
 			$model,
-			$renderer_id
+			$renderer_id,
+			$format
 		);
 	}
 	
@@ -64,8 +76,13 @@ final class Storage {
 	 * @param	string	$renderer_id The renderer identifier
 	 * @return	string The content hash
 	 */
-	public function get_hash_for( Subject $subject, Template_Model $model, string $renderer_id ): string {
-		return $this->compute_hash( new Binding( $subject ), $subject, $model, $renderer_id );
+	public function get_hash_for(
+		Subject $subject,
+		Template_Model $model,
+		string $renderer_id,
+		string $format = Output_Format::PNG
+	): string {
+		return $this->compute_hash( new Binding( $subject ), $subject, $model, $renderer_id, $format );
 	}
 	
 	/**
@@ -81,7 +98,8 @@ final class Storage {
 		Binding $binding,
 		Subject $subject,
 		Template_Model $model,
-		string $renderer_id
+		string $renderer_id,
+		string $format = Output_Format::PNG
 	): string {
 		$brand = Brand::get_tokens();
 		$parts = [
@@ -99,6 +117,9 @@ final class Storage {
 			// font files (ids + content hashes)
 			Fonts::get_fingerprint( $model ),
 			$renderer_id,
+			// the output format is derived from the design, so a post
+			// that gains or loses its photo mints a new filename
+			Output_Format::normalize( $format ),
 			Multisite::get_fingerprint(),
 			// manual escape hatch
 			(string) (int) \get_option( self::OPTION_DESIGN_VERSION, 1 ),
@@ -139,8 +160,8 @@ final class Storage {
 	 * @param	string	$hash The content hash
 	 * @return	string The filename
 	 */
-	public function get_filename( int $post_id, string $hash ): string {
-		return $this->get_filename_for( Subject::from_post( $post_id ), $hash );
+	public function get_filename( int $post_id, string $hash, string $format = Output_Format::PNG ): string {
+		return $this->get_filename_for( Subject::from_post( $post_id ), $hash, $format );
 	}
 	
 	/**
@@ -148,10 +169,15 @@ final class Storage {
 	 *
 	 * @param	Subject	$subject The subject
 	 * @param	string	$hash The content hash
+	 * @param	string	$format The output format identifier
 	 * @return	string The filename
 	 */
-	public function get_filename_for( Subject $subject, string $hash ): string {
-		return $subject->get_prefix() . '-' . $hash . '.png';
+	public function get_filename_for(
+		Subject $subject,
+		string $hash,
+		string $format = Output_Format::PNG
+	): string {
+		return $subject->get_prefix() . '-' . $hash . '.' . Output_Format::get_extension( $format );
 	}
 	
 	/**
@@ -159,10 +185,15 @@ final class Storage {
 	 *
 	 * @param	Subject	$subject The subject
 	 * @param	string	$hash The content hash
+	 * @param	string	$format The output format identifier
 	 * @return	string The URL
 	 */
-	public function get_url_for( Subject $subject, string $hash ): string {
-		return $this->get_directory()['url'] . '/' . $this->get_filename_for( $subject, $hash );
+	public function get_url_for(
+		Subject $subject,
+		string $hash,
+		string $format = Output_Format::PNG
+	): string {
+		return $this->get_directory()['url'] . '/' . $this->get_filename_for( $subject, $hash, $format );
 	}
 	
 	/**
@@ -170,17 +201,23 @@ final class Storage {
 	 *
 	 * @param	Subject	$subject The subject
 	 * @param	string	$hash The content hash
-	 * @param	string	$bytes The PNG bytes
+	 * @param	string	$bytes The rendered image bytes
+	 * @param	string	$format The output format identifier
 	 * @return	string The written path or an empty string on failure
 	 */
-	public function save_for( Subject $subject, string $hash, string $bytes ): string {
+	public function save_for(
+		Subject $subject,
+		string $hash,
+		string $bytes,
+		string $format = Output_Format::PNG
+	): string {
 		$directory = $this->ensure_directory();
 		
 		if ( $directory === '' ) {
 			return '';
 		}
 		
-		$filename = $this->get_filename_for( $subject, $hash );
+		$filename = $this->get_filename_for( $subject, $hash, $format );
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
 		$written = \file_put_contents( $directory . '/' . $filename, $bytes );
 		
@@ -200,7 +237,11 @@ final class Storage {
 	 * @param	string	$keep_filename The filename to keep (empty to delete all)
 	 */
 	public function delete_stale_for( Subject $subject, string $keep_filename = '' ): void {
-		$files = \glob( $this->get_directory()['path'] . '/' . $subject->get_prefix() . '-*.png' ) ?: [];
+		$files = \glob(
+			$this->get_directory()['path'] . '/' . $subject->get_prefix()
+				. '-*.{' . \implode( ',', Output_Format::get_extensions() ) . '}',
+			\GLOB_BRACE
+		) ?: [];
 		
 		foreach ( $files as $file ) {
 			// numeric post/term ids are unambiguous via the glob's literal
@@ -208,7 +249,8 @@ final class Storage {
 			// those require the exact 40-hex hash segment
 			if ( $subject->kind === 'post_type_archive'
 				&& \preg_match(
-					'/^' . \preg_quote( $subject->get_prefix(), '/' ) . '-[0-9a-f]{40}\.png$/',
+					'/^' . \preg_quote( $subject->get_prefix(), '/' )
+						. '-[0-9a-f]{40}\.(?:' . Output_Format::get_extension_pattern() . ')$/',
 					\basename( $file )
 				) !== 1
 			) {
@@ -230,8 +272,8 @@ final class Storage {
 	 * @param	string	$hash The content hash
 	 * @return	string The public URL
 	 */
-	public function get_url( int $post_id, string $hash ): string {
-		return $this->get_directory()['url'] . '/' . $this->get_filename( $post_id, $hash );
+	public function get_url( int $post_id, string $hash, string $format = Output_Format::PNG ): string {
+		return $this->get_directory()['url'] . '/' . $this->get_filename( $post_id, $hash, $format );
 	}
 	
 	/**
@@ -242,8 +284,13 @@ final class Storage {
 	 * @param	string	$bytes The PNG image bytes
 	 * @return	string The absolute file path or an empty string on failure
 	 */
-	public function save( int $post_id, string $hash, string $bytes ): string {
-		return $this->save_for( Subject::from_post( $post_id ), $hash, $bytes );
+	public function save(
+		int $post_id,
+		string $hash,
+		string $bytes,
+		string $format = Output_Format::PNG
+	): string {
+		return $this->save_for( Subject::from_post( $post_id ), $hash, $bytes, $format );
 	}
 	
 	/**
@@ -255,9 +302,14 @@ final class Storage {
 	 * @return	int The number of deleted files
 	 */
 	public function delete_orphans(): int {
-		$files = \glob( $this->get_directory()['path'] . '/og-*.png' ) ?: [];
+		$files = \glob(
+			$this->get_directory()['path'] . '/og-*.{'
+				. \implode( ',', Output_Format::get_extensions() ) . '}',
+			\GLOB_BRACE
+		) ?: [];
 		$deleted = 0;
 		$entries = [];
+		$hash = null;
 		$post_ids = [];
 		$term_ids = [];
 		
@@ -356,25 +408,25 @@ final class Storage {
 	private function get_subject_for_file( string $filename, ?string &$hash ): ?Subject {
 		$hash = null;
 		
-		if ( \preg_match( '/^og-term-(\d+)-([0-9a-f]{40})\.png$/', $filename, $matches ) === 1 ) {
+		if ( \preg_match( '/^og-term-(\d+)-([0-9a-f]{40})\.(?:' . Output_Format::get_extension_pattern() . ')$/', $filename, $matches ) === 1 ) {
 			$hash = $matches[2];
 			
 			return Subject::from_term( (int) $matches[1] );
 		}
 		
-		if ( \preg_match( '/^og-archive-([a-z0-9_\-]+)-([0-9a-f]{40})\.png$/', $filename, $matches ) === 1 ) {
+		if ( \preg_match( '/^og-archive-([a-z0-9_\-]+)-([0-9a-f]{40})\.(?:' . Output_Format::get_extension_pattern() . ')$/', $filename, $matches ) === 1 ) {
 			$hash = $matches[2];
 			
 			return Subject::from_post_type_archive( $matches[1] );
 		}
 		
-		if ( \preg_match( '/^og-(front|blog|search|404)-([0-9a-f]{40})\.png$/', $filename, $matches ) === 1 ) {
+		if ( \preg_match( '/^og-(front|blog|search|404)-([0-9a-f]{40})\.(?:' . Output_Format::get_extension_pattern() . ')$/', $filename, $matches ) === 1 ) {
 			$hash = $matches[2];
 			
 			return Subject::special( $matches[1] );
 		}
 		
-		if ( \preg_match( '/^og-(\d+)-([0-9a-f]{40})\.png$/', $filename, $matches ) === 1 ) {
+		if ( \preg_match( '/^og-(\d+)-([0-9a-f]{40})\.(?:' . Output_Format::get_extension_pattern() . ')$/', $filename, $matches ) === 1 ) {
 			$hash = $matches[2];
 			
 			return Subject::from_post( (int) $matches[1] );

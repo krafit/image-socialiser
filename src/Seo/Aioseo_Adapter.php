@@ -3,6 +3,11 @@ declare(strict_types=1);
 
 namespace happyhappy\ImageSocialiser\Seo;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Adapter for All in One SEO (4.x).
  *
@@ -91,5 +96,28 @@ final class Aioseo_Adapter implements Seo_Adapter {
 		$meta['twitter:image'] = $image['url'];
 		
 		return $meta;
+	}
+	
+	/**
+	 * @inheritdoc
+	 *
+	 * All in One SEO keeps social data in its own `aioseo_posts`
+	 * table rather than post meta, so the record is read through the
+	 * plugin's model. Anything unexpected degrades to false, which
+	 * simply means our image keeps winning.
+	 */
+	public function has_manual_image( int $post_id ): bool {
+		if ( ! \class_exists( '\AIOSEO\Plugin\Common\Models\Post' ) ) {
+			return false;
+		}
+		
+		$record = \AIOSEO\Plugin\Common\Models\Post::getPost( $post_id );
+		
+		if ( ! \is_object( $record ) ) {
+			return false;
+		}
+		
+		return ( $record->og_image_type ?? '' ) === 'custom'
+			&& (string) ( $record->og_image_custom_url ?? '' ) !== '';
 	}
 }

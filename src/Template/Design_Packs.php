@@ -6,6 +6,11 @@ namespace happyhappy\ImageSocialiser\Template;
 use happyhappy\ImageSocialiser\Rendering\Custom_Fonts;
 use WP_Error;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Loader for design packs — complete designs shipped by themes and
  * plugins via a design.json manifest.

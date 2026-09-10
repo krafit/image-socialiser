@@ -9,6 +9,11 @@ use happyhappy\ImageSocialiser\Generation\Resolver;
 use happyhappy\ImageSocialiser\Generation\Subject;
 use WP_Post;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Adapter for The SEO Framework (v4.0+, with legacy v3 fallback).
  *
@@ -174,5 +179,17 @@ final class The_Seo_Framework_Adapter implements Seo_Adapter {
 		}
 		
 		return ( new Resolver() )->resolve( $post );
+	}
+	
+	/**
+	 * @inheritdoc
+	 *
+	 * The SEO Framework stores the per-post social image as
+	 * `_social_image_id` (attachment) with `_social_image_url` as the
+	 * URL-only variant.
+	 */
+	public function has_manual_image( int $post_id ): bool {
+		return (int) \get_post_meta( $post_id, '_social_image_id', true ) > 0
+			|| (string) \get_post_meta( $post_id, '_social_image_url', true ) !== '';
 	}
 }

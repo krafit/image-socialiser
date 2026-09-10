@@ -12,6 +12,11 @@ use happyhappy\ImageSocialiser\Rendering\Fonts;
 use happyhappy\ImageSocialiser\Template\Brand;
 use happyhappy\ImageSocialiser\Template\Design;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * The network admin settings page.
  *
@@ -185,10 +190,6 @@ final class Network_Settings {
 		
 		\check_admin_referer( self::ACTION_UPLOAD_FONT );
 		
-		if ( empty( $_POST['image_socialiser_font_license'] ) ) {
-			self::redirect( [ 'font-status' => 'license' ] );
-		}
-		
 		$file = $_FILES['image_socialiser_font'] ?? null; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 		$error = Custom_Fonts::validate_upload( \is_array( $file ) ? $file : [] );
 		
@@ -196,7 +197,9 @@ final class Network_Settings {
 			self::redirect( [ 'font-status' => $error ] );
 		}
 		
-		$label = \sanitize_text_field( (string) ( $_POST['image_socialiser_font_label'] ?? '' ) );
+		$label = \sanitize_text_field(
+			(string) \wp_unslash( $_POST['image_socialiser_font_label'] ?? '' )
+		);
 		
 		if ( $label === '' ) {
 			$label = \pathinfo( \sanitize_file_name( (string) $file['name'] ), \PATHINFO_FILENAME );
@@ -467,7 +470,7 @@ final class Network_Settings {
 		\printf(
 			'<input type="number" name="%1$s" value="%2$d" min="0" class="small-text"> ',
 			\esc_attr( $name ),
-			$value
+			(int) $value
 		);
 		echo '<span class="description">' . \esc_html__( 'Media ID from the main site.', 'image-socialiser' ) . '</span>';
 		$image = Multisite::get_main_site_attachment_image( $value );
@@ -535,10 +538,13 @@ final class Network_Settings {
 		echo '<p><label>' . \esc_html__( 'Font name', 'image-socialiser' ) . ' ';
 		echo '<input type="text" name="image_socialiser_font_label" class="regular-text"></label></p>';
 		echo '<p><input type="file" name="image_socialiser_font" accept=".ttf,.otf" required></p>';
-		echo '<p><label><input type="checkbox" name="image_socialiser_font_license" value="1" required> '
-			. \esc_html__( 'I confirm that the font license allows embedding it in generated images.', 'image-socialiser' )
-			. '</label></p>';
 		\submit_button( \__( 'Upload font', 'image-socialiser' ), 'secondary' );
+		echo '<p class="description">'
+			. \esc_html__(
+				'TTF and OTF files only, 2 MB maximum. Make sure the font license allows embedding it in generated images.',
+				'image-socialiser'
+			)
+			. '</p>';
 		echo '</form>';
 	}
 	

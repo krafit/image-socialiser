@@ -5,6 +5,11 @@ namespace happyhappy\ImageSocialiser\Rendering;
 
 use Closure;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Fits text into a bounding box.
  *

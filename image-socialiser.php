@@ -7,7 +7,7 @@ namespace happyhappy\ImageSocialiser;
  * Plugin Name:	Image Socialiser
  * Plugin URI:	https://simon.blog/
  * Description:	Generates branded Open Graph images per post from a site-wide, editable template.
- * Version:	1.0.0-beta.1
+ * Version:	1.0.0-beta.3
  * Author:	Simon Kraft
  * Author URI:	https://simon.blog/
  * License:	GPL2
@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 define( 'IMAGE_SOCIALISER_FILE', __FILE__ );
-define( 'IMAGE_SOCIALISER_VERSION', '1.0.0-beta.1' );
+define( 'IMAGE_SOCIALISER_VERSION', '1.0.0-beta.3' );
 
 // Action Scheduler registers itself and must be loaded on plugin inclusion
 if ( file_exists( __DIR__ . '/vendor/woocommerce/action-scheduler/action-scheduler.php' ) ) {

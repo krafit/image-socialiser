@@ -3,6 +3,11 @@ declare(strict_types=1);
 
 namespace happyhappy\ImageSocialiser\Seo;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Integration with Podlove Podcast Publisher.
  *

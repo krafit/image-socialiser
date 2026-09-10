@@ -5,8 +5,14 @@ namespace happyhappy\ImageSocialiser\Generation;
 
 use happyhappy\ImageSocialiser\Multisite\Multisite;
 
+use happyhappy\ImageSocialiser\Rendering\Output_Format;
 use happyhappy\ImageSocialiser\Template\Template_Registry;
 use WP_Post;
+
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Resolves the Open Graph image for a post via the fallback chain.
@@ -122,15 +128,23 @@ final class Resolver {
 		}
 		
 		$storage = new Storage();
+		// read the stored format instead of resolving the template:
+		// this runs on the crawler path and must stay a meta read
+		$format = Output_Format::normalize( $subject->get_state( Generator::META_FORMAT ) );
 		
-		if ( ! \file_exists( $storage->get_directory()['path'] . '/' . $storage->get_filename_for( $subject, $hash ) ) ) {
+		if (
+			! \file_exists(
+				$storage->get_directory()['path'] . '/'
+					. $storage->get_filename_for( $subject, $hash, $format )
+			)
+		) {
 			return null;
 		}
 		
 		return [
 			'height' => 630,
-			'type' => 'image/png',
-			'url' => $storage->get_url_for( $subject, $hash ),
+			'type' => Output_Format::get_mime_type( $format ),
+			'url' => $storage->get_url_for( $subject, $hash, $format ),
 			'width' => 1200,
 		];
 	}
@@ -202,7 +216,11 @@ final class Resolver {
 		}
 		
 		$storage = new Storage();
-		$path = $storage->get_directory()['path'] . '/' . $storage->get_filename( $post->ID, $hash );
+		$format = Output_Format::normalize(
+			(string) \get_post_meta( $post->ID, Generator::META_FORMAT, true )
+		);
+		$path = $storage->get_directory()['path'] . '/'
+			. $storage->get_filename( $post->ID, $hash, $format );
 		
 		if ( ! \file_exists( $path ) ) {
 			return null;
@@ -212,8 +230,8 @@ final class Resolver {
 		
 		return [
 			'height' => $model->get_height(),
-			'type' => 'image/png',
-			'url' => $storage->get_url( $post->ID, $hash ),
+			'type' => Output_Format::get_mime_type( $format ),
+			'url' => $storage->get_url( $post->ID, $hash, $format ),
 			'width' => $model->get_width(),
 		];
 	}

@@ -6,6 +6,11 @@ namespace happyhappy\ImageSocialiser\Template;
 use happyhappy\ImageSocialiser\Multisite\Multisite;
 use happyhappy\ImageSocialiser\Rendering\Fonts;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Site-wide brand tokens (colors, fonts, logo).
  *

@@ -7,6 +7,11 @@ use happyhappy\ImageSocialiser\Generation\Post_Types;
 use happyhappy\ImageSocialiser\Generation\Resolver;
 use WP_Post;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * oEmbed integration: the resolved image becomes the embed thumbnail.
  *

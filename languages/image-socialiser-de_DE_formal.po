@@ -22,7 +22,7 @@ msgstr "Image Socialiser: Es ist kein Bild-Renderer verfügbar. Bitten Sie Ihren
 #: src/Multisite/Network_Settings.php:236
 #: src/Admin/Settings.php:292
 #: src/Admin/Settings.php:293
-#: src/Admin/Settings.php:1530
+#: src/Admin/Settings.php:1565
 msgid "Social Images"
 msgstr "Social-Media-Bilder"
 
@@ -57,26 +57,26 @@ msgid "Muted color"
 msgstr "Gedämpfte Farbe"
 
 #: src/Multisite/Network_Settings.php:270
-#: src/Admin/Settings.php:386
-#: src/Admin/Settings.php:1006
+#: src/Admin/Settings.php:394
+#: src/Admin/Settings.php:1021
 msgid "Text color"
 msgstr "Textfarbe"
 
 #: src/Multisite/Network_Settings.php:273
-#: src/Admin/Settings.php:391
-#: src/Admin/Settings.php:1013
+#: src/Admin/Settings.php:399
+#: src/Admin/Settings.php:1028
 msgid "Body font"
 msgstr "Schriftart für Fließtext"
 
 #: src/Multisite/Network_Settings.php:274
-#: src/Admin/Settings.php:390
-#: src/Admin/Settings.php:1012
+#: src/Admin/Settings.php:398
+#: src/Admin/Settings.php:1027
 msgid "Heading font"
 msgstr "Schriftart für Überschriften"
 
 #: src/Multisite/Network_Settings.php:277
 #: src/Multisite/Network_Settings.php:650
-#: src/Admin/Settings.php:373
+#: src/Admin/Settings.php:381
 msgid "Brand"
 msgstr "Marke"
 
@@ -85,44 +85,44 @@ msgid "Automatic (each site: its site icon, or its theme logo)"
 msgstr "Automatisch (jede Website: ihr Website-Icon oder ihr Theme-Logo)"
 
 #: src/Multisite/Network_Settings.php:321
-#: src/Admin/Settings.php:704
+#: src/Admin/Settings.php:719
 msgid "Custom image"
 msgstr "Eigenes Bild"
 
 #: src/Multisite/Network_Settings.php:322
-#: src/Admin/Settings.php:705
+#: src/Admin/Settings.php:720
 msgid "No logo"
 msgstr "Kein Logo"
 
 #: src/Multisite/Network_Settings.php:325
 #: src/Multisite/Network_Settings.php:413
-#: src/Admin/Settings.php:392
-#: src/Admin/Settings.php:536
+#: src/Admin/Settings.php:400
+#: src/Admin/Settings.php:551
 msgid "Logo"
 msgstr "Logo"
 
 #: src/Multisite/Network_Settings.php:339
-#: src/Admin/Settings.php:393
+#: src/Admin/Settings.php:401
 msgid "Cover art"
 msgstr "Cover-Art"
 
 #: src/Multisite/Network_Settings.php:342
-#: src/Admin/Settings.php:394
+#: src/Admin/Settings.php:402
 msgid "Background image"
 msgstr "Hintergrundbild"
 
 #: src/Multisite/Network_Settings.php:355
-#: src/Admin/Settings.php:759
+#: src/Admin/Settings.php:774
 msgid "First category"
 msgstr "Erste Kategorie"
 
 #: src/Multisite/Network_Settings.php:356
-#: src/Admin/Settings.php:760
+#: src/Admin/Settings.php:775
 msgid "Excerpt"
 msgstr "Textauszug"
 
 #: src/Multisite/Network_Settings.php:357
-#: src/Admin/Settings.php:761
+#: src/Admin/Settings.php:776
 msgid "None"
 msgstr "Keine"
 
@@ -132,18 +132,18 @@ msgstr "Untertitel der Website"
 
 #: src/Multisite/Network_Settings.php:361
 #: src/Multisite/Network_Settings.php:651
-#: src/Admin/Settings.php:452
+#: src/Admin/Settings.php:460
 msgid "Content"
 msgstr "Inhalt"
 
 #: src/Multisite/Network_Settings.php:362
-#: src/Admin/Settings.php:465
+#: src/Admin/Settings.php:480
 msgid "Secondary line"
 msgstr "Zweite Textzeile"
 
 #: src/Multisite/Network_Settings.php:383
 #: src/Multisite/Network_Settings.php:652
-#: src/Admin/Settings.php:1448
+#: src/Admin/Settings.php:1483
 msgid "Fallback image"
 msgstr "Fallback-Bild"
 
@@ -152,58 +152,58 @@ msgid "Network-wide fallback"
 msgstr "Netzwerkweiter Fallback"
 
 #: src/Multisite/Network_Settings.php:396
-#: src/Admin/Settings.php:519
+#: src/Admin/Settings.php:534
 msgid "Bottom left"
 msgstr "Unten links"
 
 #: src/Multisite/Network_Settings.php:397
-#: src/Admin/Settings.php:520
+#: src/Admin/Settings.php:535
 msgid "Bottom right"
 msgstr "Unten rechts"
 
 #: src/Multisite/Network_Settings.php:398
-#: src/Admin/Settings.php:521
+#: src/Admin/Settings.php:536
 msgid "Top left"
 msgstr "Oben links"
 
 #: src/Multisite/Network_Settings.php:399
-#: src/Admin/Settings.php:522
+#: src/Admin/Settings.php:537
 msgid "Top right"
 msgstr "Oben rechts"
 
 #: src/Multisite/Network_Settings.php:402
-#: src/Admin/Settings.php:525
+#: src/Admin/Settings.php:540
 msgid "Center"
 msgstr "Zentriert"
 
 #: src/Multisite/Network_Settings.php:403
-#: src/Admin/Settings.php:526
+#: src/Admin/Settings.php:541
 msgid "Left"
 msgstr "Links"
 
 #: src/Multisite/Network_Settings.php:404
-#: src/Admin/Settings.php:527
+#: src/Admin/Settings.php:542
 msgid "Right"
 msgstr "Rechts"
 
 #: src/Multisite/Network_Settings.php:408
-#: src/Admin/Settings.php:531
+#: src/Admin/Settings.php:546
 msgid "Site name"
 msgstr "Website-Name"
 
 #: src/Multisite/Network_Settings.php:419
 #: src/Multisite/Network_Settings.php:654
-#: src/Admin/Settings.php:414
+#: src/Admin/Settings.php:422
 msgid "Layout"
 msgstr "Layout"
 
 #: src/Multisite/Network_Settings.php:420
-#: src/Admin/Settings.php:420
+#: src/Admin/Settings.php:428
 msgid "Elements"
 msgstr "Elemente"
 
 #: src/Multisite/Network_Settings.php:445
-#: src/Admin/Settings.php:646
+#: src/Admin/Settings.php:661
 msgid "Text alignment"
 msgstr "Textausrichtung"
 
@@ -220,27 +220,27 @@ msgid "Network fonts are available to every site in the network."
 msgstr "Netzwerk-Schriftarten sind für jede Website im Netzwerk verfügbar."
 
 #: src/Multisite/Network_Settings.php:495
-#: src/Admin/Settings.php:1968
+#: src/Admin/Settings.php:2003
 msgid "Font"
 msgstr "Schriftart"
 
 #: src/Multisite/Network_Settings.php:496
-#: src/Admin/Settings.php:1969
+#: src/Admin/Settings.php:2004
 msgid "File"
 msgstr "Datei"
 
 #: src/Multisite/Network_Settings.php:509
-#: src/Admin/Settings.php:1985
+#: src/Admin/Settings.php:2020
 msgid "In use by %s"
 msgstr "Verwendet von %s"
 
 #: src/Multisite/Network_Settings.php:521
-#: src/Admin/Settings.php:1997
+#: src/Admin/Settings.php:2032
 msgid "Delete"
 msgstr "Löschen"
 
 #: src/Multisite/Network_Settings.php:535
-#: src/Admin/Settings.php:2011
+#: src/Admin/Settings.php:2046
 msgid "Font name"
 msgstr "Name der Schriftart"
 
@@ -249,7 +249,7 @@ msgid "I confirm that the font license allows embedding it in generated images."
 msgstr "Ich bestätige, dass die Schriftlizenz das Einbetten in generierte Bilder erlaubt."
 
 #: src/Multisite/Network_Settings.php:541
-#: src/Admin/Settings.php:2014
+#: src/Admin/Settings.php:2049
 msgid "Upload font"
 msgstr "Schriftart hochladen"
 
@@ -262,17 +262,17 @@ msgid "Site"
 msgstr "Website"
 
 #: src/Multisite/Network_Settings.php:556
-#: src/Admin/Settings.php:2106
+#: src/Admin/Settings.php:2141
 msgid "Generated images"
 msgstr "Generierte Bilder"
 
 #: src/Multisite/Network_Settings.php:557
-#: src/Admin/Settings.php:2111
+#: src/Admin/Settings.php:2146
 msgid "Queued"
 msgstr "In der Warteschlange"
 
 #: src/Multisite/Network_Settings.php:558
-#: src/Admin/Settings.php:2116
+#: src/Admin/Settings.php:2151
 msgid "Failed"
 msgstr "Fehlgeschlagen"
 
@@ -290,7 +290,7 @@ msgstr "Die Neugenerierung wurde für jede Website eingereiht und läuft im Hint
 
 #: src/Multisite/Network_Settings.php:628
 #: src/Multisite/Network_Settings.php:655
-#: src/Admin/Settings.php:458
+#: src/Admin/Settings.php:466
 msgid "Post types"
 msgstr "Inhaltstypen"
 
@@ -299,7 +299,7 @@ msgid "Based on the main site’s public post types; unknown types are ignored p
 msgstr "Basierend auf den öffentlichen Inhaltstypen der Hauptwebsite; unbekannte Typen werden pro Website ignoriert."
 
 #: src/Multisite/Network_Settings.php:653
-#: src/Admin/Settings.php:1950
+#: src/Admin/Settings.php:1985
 msgid "Fonts"
 msgstr "Schriftarten"
 
@@ -320,7 +320,7 @@ msgid "Network only"
 msgstr "Nur Netzwerk"
 
 #: src/Multisite/Network_Settings.php:692
-#: src/Admin/Settings.php:1632
+#: src/Admin/Settings.php:1667
 msgid "Tools"
 msgstr "Werkzeuge"
 
@@ -353,19 +353,19 @@ msgid "Your post title appears here"
 msgstr "Hier erscheint Ihr Beitragstitel"
 
 #: src/Admin/Settings.php:198
-#: src/Admin/Settings.php:1280
-#: src/Admin/Settings.php:1339
-#: src/Admin/Settings.php:1489
+#: src/Admin/Settings.php:1295
+#: src/Admin/Settings.php:1354
+#: src/Admin/Settings.php:1524
 msgid "Site default"
 msgstr "Website-Standard"
 
 #: src/Admin/Settings.php:225
-#: src/Admin/Settings.php:1309
+#: src/Admin/Settings.php:1324
 msgid "404 page"
 msgstr "404-Seite"
 
 #: src/Admin/Settings.php:226
-#: src/Admin/Settings.php:1310
+#: src/Admin/Settings.php:1325
 msgid "Post type archives"
 msgstr "Inhaltstyp-Archive"
 
@@ -378,382 +378,394 @@ msgid "Front page"
 msgstr "Startseite"
 
 #: src/Admin/Settings.php:229
-#: src/Admin/Settings.php:1413
+#: src/Admin/Settings.php:1428
 #: src/Template/Binding.php:225
 msgid "Search"
 msgstr "Suche"
 
-#: src/Admin/Settings.php:375
+#: src/Admin/Settings.php:383
 msgid "These design tokens are used by the image templates. Saving changes regenerates all images in the background."
 msgstr "Diese Design-Tokens werden von den Bild-Templates verwendet. Beim Speichern von Änderungen werden alle Bilder im Hintergrund neu generiert."
 
-#: src/Admin/Settings.php:384
-#: src/Admin/Settings.php:1004
+#: src/Admin/Settings.php:392
+#: src/Admin/Settings.php:1019
 msgid "Background gradient start"
 msgstr "Startfarbe des Hintergrundverlaufs"
 
-#: src/Admin/Settings.php:385
-#: src/Admin/Settings.php:1005
+#: src/Admin/Settings.php:393
+#: src/Admin/Settings.php:1020
 msgid "Background gradient end"
 msgstr "Endfarbe des Hintergrundverlaufs"
 
-#: src/Admin/Settings.php:387
-#: src/Admin/Settings.php:1007
+#: src/Admin/Settings.php:395
+#: src/Admin/Settings.php:1022
 msgid "Muted text color"
 msgstr "Gedämpfte Textfarbe"
 
-#: src/Admin/Settings.php:388
-#: src/Admin/Settings.php:1008
+#: src/Admin/Settings.php:396
+#: src/Admin/Settings.php:1023
 msgid "Secondary line color"
 msgstr "Farbe der zweiten Textzeile"
 
-#: src/Admin/Settings.php:389
-#: src/Admin/Settings.php:1009
+#: src/Admin/Settings.php:397
+#: src/Admin/Settings.php:1024
 msgid "Site name color"
 msgstr "Farbe des Website-Namens"
 
-#: src/Admin/Settings.php:427
+#: src/Admin/Settings.php:435
 msgid "Archives & special pages"
 msgstr "Archive & spezielle Seiten"
 
-#: src/Admin/Settings.php:429
+#: src/Admin/Settings.php:437
 msgid "Generate images for term archives, post type archives, and the special pages. Search, 404, and blog images are static — one image per design."
 msgstr "Bilder für Begriff-Archive, Inhaltstyp-Archive und die speziellen Seiten generieren. Such-, 404- und Blog-Bilder sind statisch — ein Bild pro Design."
 
-#: src/Admin/Settings.php:438
+#: src/Admin/Settings.php:446
 msgid "Taxonomies"
 msgstr "Taxonomien"
 
-#: src/Admin/Settings.php:445
+#: src/Admin/Settings.php:453
 msgid "Special pages"
 msgstr "Spezielle Seiten"
 
-#: src/Admin/Settings.php:475
+#: src/Admin/Settings.php:473
+msgid "Generation"
+msgstr "Generierung"
+
+#: src/Admin/Settings.php:490
 msgid "Per-design overrides"
 msgstr "Design-spezifische Überschreibungen"
 
-#: src/Admin/Settings.php:477
+#: src/Admin/Settings.php:492
 msgid "Override individual colors and fonts for a single design. Empty controls keep the site-wide value; overrides apply on top of theme and network values."
 msgstr "Überschreiben Sie einzelne Farben und Schriftarten für ein einzelnes Design. Leere Felder behalten den websiteweiten Wert; Überschreibungen gelten zusätzlich zu Theme- und Netzwerk-Werten."
 
-#: src/Admin/Settings.php:486
+#: src/Admin/Settings.php:501
 msgid "Design"
 msgstr "Design"
 
-#: src/Admin/Settings.php:496
+#: src/Admin/Settings.php:511
 msgid "Site-wide fallback image"
 msgstr "Fallback-Bild für die gesamte Website"
 
-#: src/Admin/Settings.php:501
+#: src/Admin/Settings.php:516
 msgid "Used when no image could be generated and no other fallback applies."
 msgstr "Wird verwendet, wenn kein Bild generiert werden konnte und kein anderes Fallback greift."
 
-#: src/Admin/Settings.php:604
+#: src/Admin/Settings.php:619
 msgid "Position of %s"
 msgstr "Position von %s"
 
-#: src/Admin/Settings.php:664
+#: src/Admin/Settings.php:679
 msgid "Applies to the title and the secondary line."
 msgstr "Gilt für den Titel und die zweite Textzeile."
 
-#: src/Admin/Settings.php:676
+#: src/Admin/Settings.php:691
 msgid "Greyed-out values without a theme notice are defined by the current default template."
 msgstr "Ausgegraute Werte ohne Theme-Hinweis werden vom aktuellen Standard-Template festgelegt."
 
-#: src/Admin/Settings.php:685
+#: src/Admin/Settings.php:700
 msgid "The current default template does not use these layout settings."
 msgstr "Das aktuelle Standard-Template verwendet diese Layout-Einstellungen nicht."
 
-#: src/Admin/Settings.php:703
+#: src/Admin/Settings.php:718
 msgid "Automatic (site icon, or the theme logo)"
 msgstr "Automatisch (Website-Icon oder das Theme-Logo)"
 
-#: src/Admin/Settings.php:743
+#: src/Admin/Settings.php:758
 msgid "Used when \"Custom image\" is selected."
 msgstr "Wird verwendet, wenn „Eigenes Bild“ ausgewählt ist."
 
-#: src/Admin/Settings.php:762
+#: src/Admin/Settings.php:777
 msgid "Tagline"
 msgstr "Untertitel der Website"
 
-#: src/Admin/Settings.php:794
+#: src/Admin/Settings.php:809
 msgid "Shown as a second line under the title when a post has no custom subtitle."
 msgstr "Wird als zweite Zeile unter dem Titel angezeigt, wenn ein Beitrag keinen eigenen Untertitel hat."
 
-#: src/Admin/Settings.php:881
+#: src/Admin/Settings.php:896
 msgid "Managed network-wide."
 msgstr "Wird netzwerkweit verwaltet."
 
-#: src/Admin/Settings.php:884
+#: src/Admin/Settings.php:899
 msgid "Managed by your theme (%s)."
 msgstr "Wird von Ihrem Theme verwaltet (%s)."
 
-#: src/Admin/Settings.php:972
+#: src/Admin/Settings.php:987
 msgid "Same as the muted text color"
 msgstr "Wie die gedämpfte Textfarbe"
 
-#: src/Admin/Settings.php:1069
+#: src/Admin/Settings.php:1084
 msgid "Site-wide font"
 msgstr "Websiteweite Schriftart"
 
-#: src/Admin/Settings.php:1091
+#: src/Admin/Settings.php:1106
 msgid "Overrides marked with • are set. Unchecked colors and \"Site-wide font\" mean no override."
 msgstr "Mit • markierte Überschreibungen sind gesetzt. Nicht aktivierte Farben und „Websiteweite Schriftart“ bedeuten keine Überschreibung."
 
-#: src/Admin/Settings.php:1179
+#: src/Admin/Settings.php:1194
 msgid "Single-weight display faces are available for the heading font only."
 msgstr "Display-Schriften mit nur einer Schriftstärke sind ausschließlich für die Überschriften-Schriftart verfügbar."
 
-#: src/Admin/Settings.php:1226
+#: src/Admin/Settings.php:1241
 msgid "Select image"
 msgstr "Bild auswählen"
 
-#: src/Admin/Settings.php:1232
+#: src/Admin/Settings.php:1247
 #: assets/js/editor.js:234
 msgid "Remove"
 msgstr "Entfernen"
 
-#: src/Admin/Settings.php:1275
-#: src/Admin/Settings.php:1334
+#: src/Admin/Settings.php:1290
+#: src/Admin/Settings.php:1349
 msgid "Template for %s"
 msgstr "Template für %s"
 
-#: src/Admin/Settings.php:1295
+#: src/Admin/Settings.php:1310
 msgid "Term images are generated when a term is created or edited, and during bulk regeneration."
 msgstr "Begriff-Bilder werden generiert, wenn ein Begriff erstellt oder bearbeitet wird, sowie bei der Massen-Neugenerierung."
 
-#: src/Admin/Settings.php:1311
+#: src/Admin/Settings.php:1326
 msgid "Blog (posts index)"
 msgstr "Blog (Beitragsübersicht)"
 
-#: src/Admin/Settings.php:1312
+#: src/Admin/Settings.php:1327
 msgid "Front page (latest posts)"
 msgstr "Startseite (neueste Beiträge)"
 
-#: src/Admin/Settings.php:1313
+#: src/Admin/Settings.php:1328
 msgid "Search results"
 msgstr "Suchergebnisse"
 
-#: src/Admin/Settings.php:1361
+#: src/Admin/Settings.php:1376
 msgid "Custom title for %s"
 msgstr "Eigener Titel für %s"
 
-#: src/Admin/Settings.php:1375
+#: src/Admin/Settings.php:1390
 msgid "Custom subtitle for %s"
 msgstr "Eigener Untertitel für %s"
 
-#: src/Admin/Settings.php:1384
+#: src/Admin/Settings.php:1399
 msgid "Leave the title and subtitle empty to use the default shown in each field. The front page and blog toggles apply when the site shows latest posts; a static front page is covered as a regular page."
 msgstr "Lassen Sie Titel und Untertitel leer, um den jeweils im Feld angezeigten Standard zu verwenden. Die Umschalter für Startseite und Blog greifen, wenn die Website die neuesten Beiträge anzeigt; eine statische Startseite wird als normale Seite behandelt."
 
-#: src/Admin/Settings.php:1404
-#: src/Admin/Settings.php:1408
-#: src/Admin/Settings.php:1412
+#: src/Admin/Settings.php:1419
+#: src/Admin/Settings.php:1423
+#: src/Admin/Settings.php:1427
 msgid "(none)"
 msgstr "(keine)"
 
-#: src/Admin/Settings.php:1405
+#: src/Admin/Settings.php:1420
 #: src/Template/Binding.php:227
 msgid "Page not found"
 msgstr "Seite nicht gefunden"
 
-#: src/Admin/Settings.php:1409
+#: src/Admin/Settings.php:1424
 msgid "The post type name"
 msgstr "Der Name des Inhaltstyps"
 
-#: src/Admin/Settings.php:1416
+#: src/Admin/Settings.php:1431
 msgid "(site tagline)"
 msgstr "(Untertitel der Website)"
 
-#: src/Admin/Settings.php:1441
+#: src/Admin/Settings.php:1447
+msgid "Generate images while saving"
+msgstr "Bilder beim Speichern generieren"
+
+#: src/Admin/Settings.php:1450
+msgid "Renders the sharing image before the publish or update request finishes, instead of shortly afterwards in the background. Turn this on if posts are shared to social networks automatically on publish — the image is then already in place when they fetch the page. Saving takes slightly longer; if rendering is slow or fails, the background queue takes over."
+msgstr "Rendert das Sharing-Bild, bevor die Anfrage zum Veröffentlichen oder Aktualisieren abgeschlossen ist, statt kurz danach im Hintergrund. Aktivieren Sie diese Option, wenn Beiträge beim Veröffentlichen automatisch in sozialen Netzwerken geteilt werden – das Bild ist dann bereits vorhanden, wenn diese die Seite abrufen. Das Speichern dauert etwas länger; wenn das Rendern langsam ist oder fehlschlägt, übernimmt die Hintergrund-Warteschlange."
+
+#: src/Admin/Settings.php:1476
 msgid "Post type"
 msgstr "Inhaltstyp"
 
-#: src/Admin/Settings.php:1442
+#: src/Admin/Settings.php:1477
 msgid "Generate images"
 msgstr "Bilder generieren"
 
-#: src/Admin/Settings.php:1445
+#: src/Admin/Settings.php:1480
 msgid "Default template"
 msgstr "Standard-Template"
 
-#: src/Admin/Settings.php:1473
+#: src/Admin/Settings.php:1508
 msgid "Generate images for %s"
 msgstr "Bilder für %s generieren"
 
-#: src/Admin/Settings.php:1535
+#: src/Admin/Settings.php:1570
 msgid "Regeneration of all images has been queued and runs in the background."
 msgstr "Die Neugenerierung aller Bilder wurde in die Warteschlange eingereiht und läuft im Hintergrund."
 
-#: src/Admin/Settings.php:1595
+#: src/Admin/Settings.php:1630
 msgid "Sharing images for everything you publish"
 msgstr "Sharing-Bilder für alles, was Sie veröffentlichen"
 
-#: src/Admin/Settings.php:1596
+#: src/Admin/Settings.php:1631
 msgid "Image Socialiser generates a branded sharing image for every piece of content on this site — the picture social networks, chat apps, and search results show when someone links to you. Images are rendered in the background from your design and served as static files; per post, a custom title, subtitle, or image can be set right in the editor."
 msgstr "Image Socialiser generiert für jeden Inhalt dieser Website ein Sharing-Bild im Marken-Design – das Bild, das soziale Netzwerke, Chat-Apps und Suchergebnisse anzeigen, wenn jemand auf Sie verlinkt. Die Bilder werden im Hintergrund aus Ihrem Design gerendert und als statische Dateien ausgeliefert; pro Beitrag lassen sich ein eigener Titel, ein Untertitel oder ein Bild direkt im Editor festlegen."
 
-#: src/Admin/Settings.php:1603
+#: src/Admin/Settings.php:1638
 msgid "Pick a design and set your colors, fonts, and logo in the <a href=\"%1$s\">Design Center</a>. Images for term archives, the front page, search, and the 404 page live under <a href=\"%2$s\">Special Pages &amp; Archives</a>. Below, choose which post types get images."
 msgstr "Wählen Sie im <a href=\"%1$s\">Design-Center</a> ein Design und legen Sie Ihre Farben, Schriftarten und Ihr Logo fest. Bilder für Begriffsarchive, die Startseite, die Suche und die 404-Seite finden Sie unter <a href=\"%2$s\">Spezielle Seiten und Archive</a>. Wählen Sie unten, welche Inhaltstypen Bilder erhalten."
 
-#: src/Admin/Settings.php:1617
+#: src/Admin/Settings.php:1652
 msgid "Your current design, rendered live — change it in the <a href=\"%s\">Design Center</a>."
 msgstr "Ihr aktuelles Design, live gerendert – ändern können Sie es im <a href=\"%s\">Design-Center</a>."
 
-#: src/Admin/Settings.php:1637
+#: src/Admin/Settings.php:1672
 msgid "Regenerate all images"
 msgstr "Alle Bilder neu generieren"
 
-#: src/Admin/Settings.php:1639
+#: src/Admin/Settings.php:1674
 msgid "Bumps the design version and rebuilds every image in batched background jobs."
 msgstr "Erhöht die Design-Version und erstellt jedes Bild in gebündelten Hintergrund-Jobs neu."
 
-#: src/Admin/Settings.php:1672
+#: src/Admin/Settings.php:1707
 msgid "Designs"
 msgstr "Designs"
 
-#: src/Admin/Settings.php:1674
+#: src/Admin/Settings.php:1709
 msgid "Previews use your current design tokens; color changes update them live, fonts and layout apply after saving. Badges show where each design is assigned."
 msgstr "Die Vorschauen verwenden Ihre aktuellen Design-Tokens; Farbänderungen werden live übernommen, Schriftarten und Layout nach dem Speichern. Die Badges zeigen, wo jedes Design zugewiesen ist."
 
-#: src/Admin/Settings.php:1683
+#: src/Admin/Settings.php:1718
 msgid "Your theme (%1$s) sets the site-wide default template: %2$s."
 msgstr "Ihr Theme (%1$s) legt das Website-weite Standard-Template fest: %2$s."
 
-#: src/Admin/Settings.php:1698
+#: src/Admin/Settings.php:1733
 msgid "The layer & token model"
 msgstr "Das Ebenen- und Token-Modell"
 
-#: src/Admin/Settings.php:1699
+#: src/Admin/Settings.php:1734
 msgid "Every design is a stack of layers (background, image, rect, text) on a 1200×630 canvas, rendered identically by the server (PNG) and the browser preview (SVG). Layers reference design tokens — your brand colors, fonts, logo, and layout settings — so one change propagates to every design. Filenames embed a hash of the fully resolved design: any effective change mints new URLs and regenerates images automatically."
 msgstr "Jedes Design ist ein Stapel aus Ebenen (Hintergrund, Bild, Rechteck, Text) auf einer Zeichenfläche von 1200×630 Pixeln, die vom Server (PNG) und von der Browser-Vorschau (SVG) identisch gerendert wird. Ebenen verweisen auf Design-Tokens – Ihre Markenfarben, Schriftarten, Ihr Logo und die Layout-Einstellungen –, sodass eine Änderung auf jedes Design durchschlägt. Dateinamen enthalten einen Hash des vollständig aufgelösten Designs: Jede wirksame Änderung erzeugt neue URLs und generiert die Bilder automatisch neu."
 
-#: src/Admin/Settings.php:1703
+#: src/Admin/Settings.php:1738
 msgid "Authoring a custom design"
 msgstr "Ein eigenes Design erstellen"
 
-#: src/Admin/Settings.php:1704
+#: src/Admin/Settings.php:1739
 msgid "Ship complete designs as design packs: one directory with a declarative design.json manifest, optional fonts, and background assets. Scaffold a starter pack on the command line:"
 msgstr "Liefern Sie komplette Designs als Design-Pakete aus: ein Verzeichnis mit einem deklarativen design.json-Manifest, optionalen Schriftarten und Hintergrund-Assets. Erzeugen Sie ein Startpaket auf der Kommandozeile:"
 
-#: src/Admin/Settings.php:1714
+#: src/Admin/Settings.php:1749
 msgid "The full format reference — layers, tokens, fonts, assets, previewing — lives in the %s."
 msgstr "Die vollständige Formatreferenz – Ebenen, Tokens, Schriftarten, Assets, Vorschau – finden Sie in der %s."
 
-#: src/Admin/Settings.php:1716
+#: src/Admin/Settings.php:1751
 msgid "Creating designs guide"
 msgstr "Anleitung zum Erstellen von Designs"
 
-#: src/Admin/Settings.php:1722
+#: src/Admin/Settings.php:1757
 msgid "Bundling designs with a theme or plugin"
 msgstr "Designs mit einem Theme oder Plugin ausliefern"
 
-#: src/Admin/Settings.php:1723
+#: src/Admin/Settings.php:1758
 msgid "Register a pack from your theme or plugin — the design appears in every selector and this gallery automatically:"
 msgstr "Registrieren Sie ein Paket aus Ihrem Theme oder Plugin – das Design erscheint automatisch in jeder Auswahl und in dieser Galerie:"
 
-#: src/Admin/Settings.php:1737
+#: src/Admin/Settings.php:1772
 msgid "Themes can also hand over individual design values via add_theme_support(); see the %1$s. All hooks, options, and CLI commands are documented in the %2$s."
 msgstr "Themes können einzelne Design-Werte auch über add_theme_support() übergeben; siehe die %1$s. Alle Hooks, Optionen und CLI-Befehle sind in der %2$s dokumentiert."
 
-#: src/Admin/Settings.php:1739
+#: src/Admin/Settings.php:1774
 msgid "theme authors guide"
 msgstr "Anleitung für Theme-Autoren"
 
-#: src/Admin/Settings.php:1742
+#: src/Admin/Settings.php:1777
 msgid "developer reference"
 msgstr "Entwickler-Referenz"
 
-#: src/Admin/Settings.php:1763
+#: src/Admin/Settings.php:1798
 msgid "No image renderer is available — images cannot be generated."
 msgstr "Es ist kein Bild-Renderer verfügbar – es können keine Bilder generiert werden."
 
-#: src/Admin/Settings.php:1770
+#: src/Admin/Settings.php:1805
 msgid "%1$d images generated, %2$d failed — see the details below."
 msgstr "%1$d Bilder generiert, %2$d fehlgeschlagen – siehe die Details unten."
 
-#: src/Admin/Settings.php:1781
+#: src/Admin/Settings.php:1816
 msgid "%1$d images generated, %2$d queued and generating in the background."
 msgstr "%1$d Bilder generiert, %2$d in der Warteschlange und werden im Hintergrund generiert."
 
-#: src/Admin/Settings.php:1792
+#: src/Admin/Settings.php:1827
 msgid "Everything is fine — %d images generated."
 msgstr "Alles in Ordnung – %d Bilder generiert."
 
-#: src/Admin/Settings.php:1799
+#: src/Admin/Settings.php:1834
 msgid "Details"
 msgstr "Details"
 
-#: src/Admin/Settings.php:1925
+#: src/Admin/Settings.php:1960
 msgid "The font has been deleted."
 msgstr "Die Schriftart wurde gelöscht."
 
-#: src/Admin/Settings.php:1926
+#: src/Admin/Settings.php:1961
 msgid "This font cannot be deleted while it is in use."
 msgstr "Diese Schriftart kann nicht gelöscht werden, solange sie verwendet wird."
 
-#: src/Admin/Settings.php:1927
+#: src/Admin/Settings.php:1962
 msgid "The font file could not be stored."
 msgstr "Die Schriftdatei konnte nicht gespeichert werden."
 
-#: src/Admin/Settings.php:1928
+#: src/Admin/Settings.php:1963
 msgid "No font file was uploaded."
 msgstr "Es wurde keine Schriftdatei hochgeladen."
 
-#: src/Admin/Settings.php:1929
+#: src/Admin/Settings.php:1964
 msgid "The font could not be found."
 msgstr "Die Schriftart wurde nicht gefunden."
 
-#: src/Admin/Settings.php:1930
+#: src/Admin/Settings.php:1965
 msgid "The font file exceeds the 2 MB size limit."
 msgstr "Die Schriftdatei überschreitet die Größenbeschränkung von 2 MB."
 
-#: src/Admin/Settings.php:1931
+#: src/Admin/Settings.php:1966
 msgid "The font has been uploaded and is available in all font selects."
 msgstr "Die Schriftart wurde hochgeladen und ist in allen Schriftart-Auswahlfeldern verfügbar."
 
-#: src/Admin/Settings.php:1932
+#: src/Admin/Settings.php:1967
 msgid "Only valid TTF and OTF font files are accepted."
 msgstr "Es werden nur gültige TTF- und OTF-Schriftdateien akzeptiert."
 
-#: src/Admin/Settings.php:1955
+#: src/Admin/Settings.php:1990
 msgid "Fonts are managed network-wide; per-site fonts are disabled on this network."
 msgstr "Schriftarten werden netzwerkweit verwaltet; Website-eigene Schriftarten sind in diesem Netzwerk deaktiviert."
 
-#: src/Admin/Settings.php:2016
+#: src/Admin/Settings.php:2051
 msgid "TTF and OTF files only, 2 MB maximum. Uploaded fonts appear in every font select and in the editor preview. Make sure the font license allows embedding it in generated images."
 msgstr "Nur TTF- und OTF-Dateien, maximal 2 MB. Hochgeladene Schriftarten erscheinen in jeder Schriftauswahl und in der Editor-Vorschau. Stellen Sie sicher, dass die Schriftlizenz das Einbetten in generierte Bilder erlaubt."
 
-#: src/Admin/Settings.php:2061
+#: src/Admin/Settings.php:2096
 msgid "None available"
 msgstr "Keiner verfügbar"
 
-#: src/Admin/Settings.php:2093
+#: src/Admin/Settings.php:2128
 msgid "%1$d posts, %2$d terms, %3$d archives/special pages"
 msgstr "%1$d Beiträge, %2$d Begriffe, %3$d Archive/spezielle Seiten"
 
-#: src/Admin/Settings.php:2099
+#: src/Admin/Settings.php:2134
 msgid "Active renderer"
 msgstr "Aktiver Renderer"
 
-#: src/Admin/Settings.php:2100
+#: src/Admin/Settings.php:2135
 msgid "SEO integration"
 msgstr "SEO-Integration"
 
-#: src/Admin/Settings.php:2102
+#: src/Admin/Settings.php:2137
 msgid "None detected"
 msgstr "Keine erkannt"
 
-#: src/Admin/Settings.php:2103
+#: src/Admin/Settings.php:2138
 msgid "Background queue"
 msgstr "Hintergrund-Warteschlange"
 
-#: src/Admin/Settings.php:2104
+#: src/Admin/Settings.php:2139
 msgid "Action Scheduler"
 msgstr "Action Scheduler"
 
-#: src/Admin/Settings.php:2105
+#: src/Admin/Settings.php:2140
 msgid "WP-Cron fallback"
 msgstr "WP-Cron-Fallback"
 

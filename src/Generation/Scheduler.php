@@ -8,6 +8,11 @@ use happyhappy\ImageSocialiser\Template\Design;
 use happyhappy\ImageSocialiser\Template\Template_Registry;
 use WP_Post;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Queues image generation as background jobs.
  *
@@ -77,12 +82,27 @@ final class Scheduler {
 	public const int MAX_ATTEMPTS = 3;
 	
 	/**
+	 * @var	string Option name for the synchronous generation mode.
+	 */
+	public const string OPTION_SYNC = 'image_socialiser_sync_generation';
+	
+	/**
+	 * @var	int Minimum remaining request seconds required to attempt
+	 * 		a synchronous render; below this the queue takes over.
+	 */
+	public const int SYNC_TIME_BUDGET = 10;
+	
+	/**
 	 * Initialize the scheduler.
 	 */
 	public static function init(): void {
 		$instance = new self();
 		
 		\add_action( 'save_post', [ $instance, 'schedule_on_save' ], 20, 2 );
+		// wp_after_insert_post (not save_post): in the REST flow the
+		// featured image and meta are saved only after save_post has
+		// fired, and a synchronous render must see the final state
+		\add_action( 'wp_after_insert_post', [ $instance, 'maybe_generate_synchronously' ], 20, 2 );
 		\add_action( 'deleted_post', [ $instance, 'handle_deleted_post' ] );
 		\add_action( 'init', [ $instance, 'ensure_sweep_scheduled' ] );
 		\add_action( self::ACTION_GENERATE, [ $instance, 'run_generation' ], 10, 2 );
@@ -464,13 +484,75 @@ final class Scheduler {
 	}
 	
 	/**
+	 * Generate the image inline while the save request is running.
+	 *
+	 * Opt-in via the synchronous mode option: the post's image is
+	 * rendered before the publish/update request returns, so anything
+	 * fetching the page right after publish (social auto-posters,
+	 * Bluesky's card service, crawlers) sees the real image instead
+	 * of the fallback. The queued job from schedule_on_save() stays
+	 * in place as a safety net and retry path: if the inline render
+	 * is skipped (time budget) or fails, the queue finishes the work;
+	 * if the inline render succeeds, the job becomes a no-op.
+	 *
+	 * @param	int	$post_id The post ID
+	 * @param	\WP_Post	$post The post object
+	 */
+	public function maybe_generate_synchronously( int $post_id, WP_Post $post ): void {
+		if ( ! (bool) \get_option( self::OPTION_SYNC, false ) ) {
+			return;
+		}
+		
+		if ( \wp_is_post_revision( $post_id ) !== false || \wp_is_post_autosave( $post_id ) !== false ) {
+			return;
+		}
+		
+		if ( ! \in_array( $post->post_status, $this->get_supported_statuses(), true ) ) {
+			return;
+		}
+		
+		if ( ! Post_Types::is_supported( $post->post_type ) ) {
+			return;
+		}
+		
+		$generator = new Generator();
+		
+		if ( ! $generator->needs_generation( $post ) ) {
+			return;
+		}
+		
+		// a render on a slow host must never wedge the save request;
+		// with too little execution time left, the queue takes over
+		if ( ! $this->has_time_budget() ) {
+			return;
+		}
+		
+		// failure needs no handling here: the Generator records the
+		// error state and the queued job retries with backoff
+		$generator->generate( $post_id );
+	}
+	
+	/**
 	 * Run a single generation job and retry on failure with backoff.
 	 *
 	 * @param	int	$post_id The post ID
 	 * @param	int	$attempt The current attempt, starting at 1
 	 */
 	public function run_generation( int $post_id, int $attempt = 1 ): void {
-		if ( ( new Generator() )->generate( $post_id ) ) {
+		$generator = new Generator();
+		$subject = Subject::from_post( $post_id );
+		
+		// a synchronous render may already have produced the image;
+		// skip instead of re-verifying so the ready actions do not
+		// fire a second time for the same save
+		if (
+			$subject->get_state( Generator::META_STATUS ) === Generator::STATUS_READY
+			&& ! $generator->needs_generation_subject( $subject )
+		) {
+			return;
+		}
+		
+		if ( $generator->generate( $post_id ) ) {
 			return;
 		}
 		
@@ -479,6 +561,24 @@ final class Scheduler {
 		}
 		
 		$this->schedule_retry( $post_id, $attempt + 1 );
+	}
+	
+	/**
+	 * Check whether enough request time remains for an inline render.
+	 *
+	 * @return	bool Whether a synchronous render may be attempted
+	 */
+	private function has_time_budget(): bool {
+		$limit = (int) \ini_get( 'max_execution_time' );
+		
+		if ( $limit <= 0 ) {
+			return true;
+		}
+		
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- a float cast of a server-set timestamp
+		$started = (float) ( $_SERVER['REQUEST_TIME_FLOAT'] ?? \microtime( true ) );
+		
+		return $limit - ( \microtime( true ) - $started ) >= self::SYNC_TIME_BUDGET;
 	}
 	
 	/**

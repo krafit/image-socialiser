@@ -7,6 +7,11 @@ use happyhappy\ImageSocialiser\Multisite\Multisite;
 use happyhappy\ImageSocialiser\Plugin;
 use happyhappy\ImageSocialiser\Template\Template_Model;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Registry for all usable fonts.
  *

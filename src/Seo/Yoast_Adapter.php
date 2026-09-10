@@ -3,6 +3,11 @@ declare(strict_types=1);
 
 namespace happyhappy\ImageSocialiser\Seo;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Adapter for Yoast SEO.
  *
@@ -64,5 +69,16 @@ final class Yoast_Adapter implements Seo_Adapter {
 		}
 		
 		return $image_container;
+	}
+	
+	/**
+	 * @inheritdoc
+	 *
+	 * Yoast stores the per-post Open Graph image as
+	 * `_yoast_wpseo_opengraph-image-id` / `_yoast_wpseo_opengraph-image`.
+	 */
+	public function has_manual_image( int $post_id ): bool {
+		return (int) \get_post_meta( $post_id, '_yoast_wpseo_opengraph-image-id', true ) > 0
+			|| (string) \get_post_meta( $post_id, '_yoast_wpseo_opengraph-image', true ) !== '';
 	}
 }

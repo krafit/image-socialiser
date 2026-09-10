@@ -5,6 +5,11 @@ namespace happyhappy\ImageSocialiser\Rendering;
 
 use WP_Post;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Consumes fonts installed through the WordPress Font Library (6.5+).
  *
@@ -35,6 +40,15 @@ final class Font_Library {
 	 * @var	array<string, array{label: string, path: string, url: string}>|null Per-request cache.
 	 */
 	private static ?array $faces = null;
+	
+	/**
+	 * @var	bool Whether the faces are currently being enumerated.
+	 *
+	 * 		get_faces() queries posts, which fires third-party hooks
+	 * 		that may call back into the font registry; without this
+	 * 		guard such a call would start a second enumeration.
+	 */
+	private static bool $is_loading = false;
 	
 	/**
 	 * Get all usable Font Library faces as identifier => file path.
@@ -81,48 +95,71 @@ final class Font_Library {
 			return self::$faces;
 		}
 		
-		self::$faces = [];
+		// built locally and assigned once at the end: get_posts()
+		// below fires third-party hooks, and any blog switch during
+		// them runs reset_cache(), which would otherwise null the
+		// property mid-flight and make this return null
+		$faces = [];
+		
+		// a hook fired by the query below may call back in; answer
+		// with an empty set instead of starting a second enumeration
+		if ( self::$is_loading ) {
+			return $faces;
+		}
 		
 		// Font Library exists since WordPress 6.5
 		if ( ! \function_exists( 'wp_get_font_dir' ) || ! \post_type_exists( 'wp_font_face' ) ) {
-			return self::$faces;
+			self::$faces = $faces;
+			
+			return $faces;
 		}
 		
-		$font_dir = \wp_get_font_dir();
-		$face_posts = \get_posts( [
-			'no_found_rows' => true,
-			'numberposts' => -1,
-			'post_status' => 'publish',
-			'post_type' => 'wp_font_face',
-			'update_post_term_cache' => false,
-		] );
+		self::$is_loading = true;
 		
-		foreach ( $face_posts as $face_post ) {
-			if ( ! $face_post instanceof WP_Post ) {
-				continue;
+		try {
+			$font_dir = \wp_get_font_dir();
+			$face_posts = \get_posts( [
+				'no_found_rows' => true,
+				'numberposts' => -1,
+				'post_status' => 'publish',
+				'post_type' => 'wp_font_face',
+				'update_post_term_cache' => false,
+			] );
+			
+			foreach ( $face_posts as $face_post ) {
+				if ( ! $face_post instanceof WP_Post ) {
+					continue;
+				}
+				
+				$face = \json_decode( $face_post->post_content, true );
+				
+				if ( ! \is_array( $face ) ) {
+					continue;
+				}
+				
+				$sources = \is_array( $face['src'] ?? null )
+					? $face['src']
+					: [ (string) ( $face['src'] ?? '' ) ];
+				$resolved = self::resolve_source( $sources, $font_dir );
+				
+				if ( $resolved === null ) {
+					continue;
+				}
+				
+				$faces[ self::ID_PREFIX . $face_post->ID ] = [
+					'label' => self::build_label( $face_post, $face ),
+					'path' => $resolved['path'],
+					'url' => $resolved['url'],
+				];
 			}
-			
-			$face = \json_decode( $face_post->post_content, true );
-			
-			if ( ! \is_array( $face ) ) {
-				continue;
-			}
-			
-			$sources = \is_array( $face['src'] ?? null ) ? $face['src'] : [ (string) ( $face['src'] ?? '' ) ];
-			$resolved = self::resolve_source( $sources, $font_dir );
-			
-			if ( $resolved === null ) {
-				continue;
-			}
-			
-			self::$faces[ self::ID_PREFIX . $face_post->ID ] = [
-				'label' => self::build_label( $face_post, $face ),
-				'path' => $resolved['path'],
-				'url' => $resolved['url'],
-			];
+		}
+		finally {
+			self::$is_loading = false;
 		}
 		
-		return self::$faces;
+		self::$faces = $faces;
+		
+		return $faces;
 	}
 	
 	/**
@@ -138,7 +175,7 @@ final class Font_Library {
 		
 		foreach ( $sources as $url ) {
 			$url = (string) $url;
-			$extension = \strtolower( \pathinfo( \parse_url( $url, \PHP_URL_PATH ) ?: '', \PATHINFO_EXTENSION ) );
+			$extension = \strtolower( \pathinfo( \wp_parse_url( $url, \PHP_URL_PATH ) ?: '', \PATHINFO_EXTENSION ) );
 			
 			// WOFF/WOFF2-only faces are excluded by design
 			if ( $extension !== 'ttf' && $extension !== 'otf' ) {
@@ -149,9 +186,20 @@ final class Font_Library {
 				continue;
 			}
 			
-			$path = $base_path . \substr( $url, \strlen( $base_url ) );
+			// the URL prefix match above does not stop '../' in the
+			// remainder from walking out of the font directory, so
+			// the resolved path is confined the same way design-pack
+			// assets are (see Design_Packs::resolve_relative())
+			$base = (string) \realpath( $base_path );
+			$path = (string) \realpath( $base_path . \substr( $url, \strlen( $base_url ) ) );
 			
-			if ( ! \is_readable( $path ) ) {
+			if (
+				$base === ''
+				|| $path === ''
+				|| ! \str_starts_with( $path, $base . \DIRECTORY_SEPARATOR )
+				|| ! \is_file( $path )
+				|| ! \is_readable( $path )
+			) {
 				continue;
 			}
 			

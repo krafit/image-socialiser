@@ -9,6 +9,11 @@ use happyhappy\ImageSocialiser\Multisite\Multisite;
 
 use WP_Post;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Resolves dynamic template sources for a specific post.
  *

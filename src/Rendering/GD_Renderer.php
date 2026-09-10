@@ -7,6 +7,11 @@ use GdImage;
 use happyhappy\ImageSocialiser\Template\Binding;
 use happyhappy\ImageSocialiser\Template\Template_Model;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Fallback renderer using the GD extension.
  *
@@ -38,7 +43,12 @@ final class GD_Renderer implements Renderer {
 	/**
 	 * @inheritdoc
 	 */
-	public function render( Template_Model $model, Binding $data ): string {
+	public function render(
+		Template_Model $model,
+		Binding $data,
+		string $format = Output_Format::PNG
+	): string {
+		$format = Output_Format::normalize( $format );
 		$canvas = \imagecreatetruecolor( $model->get_width(), $model->get_height() );
 		
 		if ( ! $canvas instanceof GdImage ) {
@@ -65,7 +75,34 @@ final class GD_Renderer implements Renderer {
 		}
 		
 		\ob_start();
-		\imagepng( $canvas );
+		
+		if ( $format === Output_Format::JPEG ) {
+			// JPEG has no alpha: flatten onto opaque white first,
+			// otherwise uncovered areas encode as black
+			$flattened = \imagecreatetruecolor( $model->get_width(), $model->get_height() );
+			\imagefill(
+				$flattened,
+				0,
+				0,
+				(int) \imagecolorallocate( $flattened, 255, 255, 255 )
+			);
+			\imagecopy(
+				$flattened,
+				$canvas,
+				0,
+				0,
+				0,
+				0,
+				$model->get_width(),
+				$model->get_height()
+			);
+			\imagejpeg( $flattened, null, $this->get_jpeg_quality() );
+			\imagedestroy( $flattened );
+		}
+		else {
+			\imagepng( $canvas );
+		}
+		
 		$bytes = (string) \ob_get_clean();
 		\imagedestroy( $canvas );
 		
@@ -546,4 +583,17 @@ final class GD_Renderer implements Renderer {
 		
 		return $image instanceof GdImage ? $image : null;
 	}
+
+	/**
+	 * Get the JPEG quality used for photographic renders.
+	 *
+	 * @return	int The quality between 1 and 100
+	 */
+	private function get_jpeg_quality(): int {
+		/** This filter is documented in src/Rendering/Imagick_Renderer.php */
+		$quality = (int) \apply_filters( 'image_socialiser_jpeg_quality', Output_Format::JPEG_QUALITY );
+		
+		return \max( 1, \min( 100, $quality ) );
+	}
+
 }

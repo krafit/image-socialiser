@@ -19,6 +19,11 @@ use happyhappy\ImageSocialiser\Seo\Seo_Handler;
 use happyhappy\ImageSocialiser\Template\Design_Packs;
 use happyhappy\ImageSocialiser\Template\Theme_Support;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Main plugin class.
  *
@@ -30,7 +35,7 @@ final class Plugin {
 	/**
 	 * @var	string Plugin version.
 	 */
-	public const string VERSION = '1.0.0-beta.1';
+	public const string VERSION = '1.0.0-beta.3';
 	
 	/**
 	 * @var	self|null Unique instance of the class.
@@ -73,7 +78,6 @@ final class Plugin {
 		Seo_Handler::init();
 		Theme_Support::init();
 		
-		\add_action( 'init', [ $this, 'load_textdomain' ] );
 		\add_action( 'init', [ $this, 'maybe_upgrade' ], 5 );
 		// per-request Font Library cache must not leak across blog switches
 		\add_action( 'switch_blog', [ \happyhappy\ImageSocialiser\Rendering\Font_Library::class, 'reset_cache' ] );
@@ -112,18 +116,18 @@ final class Plugin {
 			\delete_option( \happyhappy\ImageSocialiser\Generation\Subject::LEGACY_OPTION_STATE );
 		}
 		
+		// 1.0.0: the output format joined the content hash, so every
+		// design containing a photograph now resolves to a JPEG under
+		// a new filename. Existing images keep working (their stored
+		// state has no format and therefore reads as PNG, which is
+		// what those files are); this schedules the one-time
+		// regeneration proactively instead of waiting for each post
+		// to be saved.
+		if ( $stored !== '' ) {
+			( new Scheduler() )->schedule_bulk_regeneration();
+		}
+		
 		\update_option( 'image_socialiser_version', self::VERSION, false );
-	}
-	
-	/**
-	 * Load the bundled translations.
-	 */
-	public function load_textdomain(): void {
-		\load_plugin_textdomain(
-			'image-socialiser',
-			false,
-			\dirname( \plugin_basename( $this->plugin_file ) ) . '/languages'
-		);
 	}
 	
 	/**

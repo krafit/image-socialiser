@@ -21,6 +21,11 @@ use happyhappy\ImageSocialiser\Template\Template_Registry;
 use happyhappy\ImageSocialiser\Template\Theme_Support;
 use Imagick;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Settings screen under Settings > Social Images.
  *
@@ -361,6 +366,14 @@ final class Settings {
 			]
 		);
 		\register_setting(
+			self::GROUP_GENERAL,
+			Scheduler::OPTION_SYNC,
+			[
+				'sanitize_callback' => 'rest_sanitize_boolean',
+				'type' => 'boolean',
+			]
+		);
+		\register_setting(
 			self::GROUP_CONTEXT,
 			Context::OPTION_NAME,
 			[
@@ -457,6 +470,13 @@ final class Settings {
 			'image_socialiser_post_types',
 			\__( 'Post types', 'image-socialiser' ),
 			[ self::class, 'render_post_types_field' ],
+			self::PAGE_SLUG . '-general',
+			'image_socialiser_general'
+		);
+		\add_settings_field(
+			'image_socialiser_sync_generation',
+			\__( 'Generation', 'image-socialiser' ),
+			[ self::class, 'render_sync_generation_field' ],
 			self::PAGE_SLUG . '-general',
 			'image_socialiser_general'
 		);
@@ -1213,7 +1233,7 @@ final class Settings {
 		\printf(
 			'<input type="hidden" class="image-socialiser-media-id" name="%1$s" value="%2$d">',
 			\esc_attr( $name ),
-			$attachment_id
+			(int) $attachment_id
 		);
 		\printf(
 			'<img class="image-socialiser-media-preview" src="%1$s" alt="" style="display:%2$s;">',
@@ -1417,6 +1437,26 @@ final class Settings {
 				'title' => $site_name,
 			],
 		};
+	}
+	
+	/**
+	 * Render the synchronous generation checkbox.
+	 */
+	public static function render_sync_generation_field(): void {
+		$enabled = (bool) \get_option( Scheduler::OPTION_SYNC, false );
+		
+		\printf(
+			'<label><input type="checkbox" name="%1$s" value="1"%2$s> %3$s</label>',
+			\esc_attr( Scheduler::OPTION_SYNC ),
+			\checked( $enabled, true, false ),
+			\esc_html__( 'Generate images while saving', 'image-socialiser' )
+		);
+		echo '<p class="description">'
+			. \esc_html__(
+				'Renders the sharing image before the publish or update request finishes, instead of shortly afterwards in the background. Turn this on if posts are shared to social networks automatically on publish — the image is then already in place when they fetch the page. Saving takes slightly longer; if rendering is slow or fails, the background queue takes over.',
+				'image-socialiser'
+			)
+			. '</p>';
 	}
 	
 	/**
@@ -1815,6 +1855,7 @@ final class Settings {
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$counts = $wpdb->get_results(
 				$wpdb->prepare(
+					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table is a $wpdb table property from the loop above, never user input
 					"SELECT meta_value AS status, COUNT(*) AS total FROM {$table} WHERE meta_key = %s GROUP BY meta_value",
 					Generator::META_STATUS
 				),

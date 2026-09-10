@@ -7,6 +7,11 @@ use happyhappy\ImageSocialiser\Generation\Storage;
 use happyhappy\ImageSocialiser\Rendering\Fonts;
 use happyhappy\ImageSocialiser\Multisite\Multisite;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * The design token pipeline.
  *

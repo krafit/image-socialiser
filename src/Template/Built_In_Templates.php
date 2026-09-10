@@ -5,6 +5,11 @@ namespace happyhappy\ImageSocialiser\Template;
 
 use happyhappy\ImageSocialiser\Plugin;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * The built-in template collection.
  *

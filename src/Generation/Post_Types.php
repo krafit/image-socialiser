@@ -5,6 +5,11 @@ namespace happyhappy\ImageSocialiser\Generation;
 
 use happyhappy\ImageSocialiser\Multisite\Multisite;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Resolves the post types that get generated Open Graph images.
  *

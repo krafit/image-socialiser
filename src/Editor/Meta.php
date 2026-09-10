@@ -7,6 +7,11 @@ use happyhappy\ImageSocialiser\Generation\Post_Types;
 use happyhappy\ImageSocialiser\Generation\Resolver;
 use happyhappy\ImageSocialiser\Template\Binding;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Registers the editable post meta for the block editor.
  *

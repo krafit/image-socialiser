@@ -3,6 +3,11 @@ declare(strict_types=1);
 
 namespace happyhappy\ImageSocialiser\Seo;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Native mode: prints the meta tags directly on wp_head.
  *
@@ -111,5 +116,15 @@ final class Native_Adapter implements Seo_Adapter {
 			'<meta name="twitter:image" content="%s">' . \PHP_EOL,
 			\esc_url( $image['url'] )
 		);
+	}
+	
+	/**
+	 * @inheritdoc
+	 *
+	 * There is no SEO plugin in native mode, so there is never a
+	 * competing per-post image.
+	 */
+	public function has_manual_image( int $post_id ): bool {
+		return false;
 	}
 }

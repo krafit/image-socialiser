@@ -9,6 +9,11 @@ use happyhappy\ImageSocialiser\Generation\Resolver;
 use happyhappy\ImageSocialiser\Plugin;
 use happyhappy\ImageSocialiser\Template\Binding;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Term edit screen fields.
  *
@@ -148,6 +153,7 @@ final class Term_Fields {
 			),
 			Resolver::META_OVERRIDE_ID => (string) \max(
 				0,
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- the int cast is the sanitization; slashes cannot survive it
 				(int) ( $_POST['image_socialiser_term_override'] ?? 0 )
 			),
 		];

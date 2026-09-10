@@ -5,6 +5,11 @@ namespace happyhappy\ImageSocialiser\Template;
 
 use happyhappy\ImageSocialiser\Rendering\Fonts;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Theme support: themes hand design values over in code.
  *
@@ -90,17 +95,71 @@ final class Theme_Support {
 			];
 		}
 		
-		if ( \is_string( $value ) && $value !== '' && \is_readable( $value ) ) {
-			return [
-				'id' => 0,
-				'path' => $value,
-			];
+		if ( \is_string( $value ) && $value !== '' ) {
+			$path = self::validate_asset_path( $value );
+			
+			if ( $path !== '' ) {
+				return [
+					'id' => 0,
+					'path' => $path,
+				];
+			}
 		}
 		
 		return [
 			'id' => 0,
 			'path' => '',
 		];
+	}
+	
+	/**
+	 * Validate a file path declared through theme support.
+	 *
+	 * Theme code is trusted, but a theme may well derive this value
+	 * from an option or a customizer setting without thinking about
+	 * it — and the path ends up in Imagick::readImage(). It is
+	 * therefore validated exactly like a design-pack asset: a plain,
+	 * readable image file, confined to the theme directories or the
+	 * content directory.
+	 *
+	 * @param	string	$path The declared file path
+	 * @return	string The absolute file path, or an empty string when rejected
+	 */
+	private static function validate_asset_path( string $path ): string {
+		if ( \str_contains( $path, '://' ) ) {
+			return '';
+		}
+		
+		$path = (string) \realpath( $path );
+		$extension = \strtolower( \pathinfo( $path, \PATHINFO_EXTENSION ) );
+		
+		if (
+			$path === ''
+			|| ! \is_file( $path )
+			|| ! \is_readable( $path )
+			|| ! \in_array( $extension, [ 'gif', 'jpeg', 'jpg', 'png', 'webp' ], true )
+		) {
+			return '';
+		}
+		
+		$roots = [
+			\get_stylesheet_directory(),
+			\get_template_directory(),
+		];
+		
+		if ( \defined( 'WP_CONTENT_DIR' ) ) {
+			$roots[] = (string) \constant( 'WP_CONTENT_DIR' );
+		}
+		
+		foreach ( $roots as $root ) {
+			$root = (string) \realpath( (string) $root );
+			
+			if ( $root !== '' && \str_starts_with( $path, $root . \DIRECTORY_SEPARATOR ) ) {
+				return $path;
+			}
+		}
+		
+		return '';
 	}
 	
 	/**

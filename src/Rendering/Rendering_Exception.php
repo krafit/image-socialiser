@@ -5,6 +5,11 @@ namespace happyhappy\ImageSocialiser\Rendering;
 
 use Exception;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Exception thrown when rendering an image fails.
  *

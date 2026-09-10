@@ -10,6 +10,11 @@ use ImagickDraw;
 use ImagickException;
 use ImagickPixel;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Primary renderer using Imagick's native draw API.
  *
@@ -39,7 +44,12 @@ final class Imagick_Renderer implements Renderer {
 	/**
 	 * @inheritdoc
 	 */
-	public function render( Template_Model $model, Binding $data ): string {
+	public function render(
+		Template_Model $model,
+		Binding $data,
+		string $format = Output_Format::PNG
+	): string {
+		$format = Output_Format::normalize( $format );
 		try {
 			$canvas = new Imagick();
 			$canvas->newImage(
@@ -47,7 +57,7 @@ final class Imagick_Renderer implements Renderer {
 				$model->get_height(),
 				new ImagickPixel( 'none' )
 			);
-			$canvas->setImageFormat( 'png' );
+			$canvas->setImageFormat( $format === Output_Format::JPEG ? 'jpeg' : 'png' );
 			
 			foreach ( $model->get_layers() as $layer ) {
 				switch ( $layer['type'] ?? '' ) {
@@ -67,13 +77,35 @@ final class Imagick_Renderer implements Renderer {
 			}
 			
 			$canvas->setImageDepth( 8 );
-			$blob = $canvas->getImageBlob();
-			$canvas->clear();
+			
+			if ( $format === Output_Format::JPEG ) {
+				// JPEG has no alpha: composite onto an opaque canvas
+				// first, otherwise any uncovered area encodes as black
+				$flattened = new Imagick();
+				$flattened->newImage(
+					$model->get_width(),
+					$model->get_height(),
+					new ImagickPixel( '#ffffff' )
+				);
+				$flattened->setImageFormat( 'jpeg' );
+				$flattened->compositeImage( $canvas, Imagick::COMPOSITE_OVER, 0, 0 );
+				$flattened->setImageCompressionQuality( $this->get_jpeg_quality() );
+				$flattened->setImageDepth( 8 );
+				$flattened->stripImage();
+				$blob = $flattened->getImageBlob();
+				$flattened->clear();
+				$canvas->clear();
+			}
+			else {
+				$blob = $canvas->getImageBlob();
+				$canvas->clear();
+			}
 		}
 		catch ( ImagickException $exception ) {
 			throw new Rendering_Exception(
-				'Imagick rendering failed: ' . $exception->getMessage(),
+				\esc_html( 'Imagick rendering failed: ' . $exception->getMessage() ),
 				0,
+				// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- the previous exception is chained, not output
 				$exception
 			);
 		}
@@ -83,6 +115,45 @@ final class Imagick_Renderer implements Renderer {
 		}
 		
 		return $blob;
+	}
+	
+	/**
+	 * Read a bound image file with an explicit coder.
+	 *
+	 * Imagick::readImage() on a bare path lets ImageMagick pick the
+	 * coder by sniffing the file, which is the surface the MVG/MSL
+	 * delegate issues lived on. The real image type is detected
+	 * first and the coder named explicitly, so a file that is not
+	 * one of the four raster formats we support is never handed to
+	 * a delegate — it is skipped.
+	 *
+	 * @param	string	$path The absolute file path
+	 * @return	\Imagick|null The image, or null when the type is unsupported
+	 * @throws	\ImagickException If reading fails
+	 */
+	private function read_image_file( string $path ): ?Imagick {
+		$coders = [
+			\IMAGETYPE_GIF => 'gif',
+			\IMAGETYPE_JPEG => 'jpg',
+			\IMAGETYPE_PNG => 'png',
+			\IMAGETYPE_WEBP => 'webp',
+		];
+		
+		if ( \defined( 'IMAGETYPE_AVIF' ) ) {
+			$coders[ \IMAGETYPE_AVIF ] = 'avif';
+		}
+		
+		$size = \wp_getimagesize( $path );
+		$coder = $coders[ (int) ( $size[2] ?? 0 ) ] ?? '';
+		
+		if ( $coder === '' ) {
+			return null;
+		}
+		
+		$image = new Imagick();
+		$image->readImage( $coder . ':' . $path );
+		
+		return $image;
 	}
 	
 	/**
@@ -161,8 +232,12 @@ final class Imagick_Renderer implements Renderer {
 			$canvas->drawImage( $frame_draw );
 		}
 		
-		$image = new Imagick();
-		$image->readImage( $path );
+		$image = $this->read_image_file( $path );
+		
+		if ( $image === null ) {
+			return;
+		}
+		
 		$image->setIteratorIndex( 0 );
 		$image = $image->getImage();
 		$offset_x = $box['x'];
@@ -440,4 +515,23 @@ final class Imagick_Renderer implements Renderer {
 		
 		return [ $fixed, $fixed ];
 	}
+
+	/**
+	 * Get the JPEG quality used for photographic renders.
+	 *
+	 * @return	int The quality between 1 and 100
+	 */
+	private function get_jpeg_quality(): int {
+		/**
+		 * Filter the JPEG quality of photographic renders.
+		 *
+		 * @since	1.0.0
+		 *
+		 * @param	int	$quality The quality between 1 and 100
+		 */
+		$quality = (int) \apply_filters( 'image_socialiser_jpeg_quality', Output_Format::JPEG_QUALITY );
+		
+		return \max( 1, \min( 100, $quality ) );
+	}
+
 }

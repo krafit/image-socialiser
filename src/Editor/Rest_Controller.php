@@ -12,6 +12,11 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
 
+// prevent direct file access
+if ( ! \defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * REST endpoints for the block editor panel.
  *
@@ -30,6 +35,16 @@ final class Rest_Controller {
 	 * @var	string The REST route namespace.
 	 */
 	public const string ROUTE_NAMESPACE = 'image-socialiser/v1';
+	
+	/**
+	 * @var	int Seconds a regeneration lock is held for one post.
+	 */
+	public const int LOCK_SECONDS = 15;
+	
+	/**
+	 * @var	string Transient name prefix of the per-post regeneration lock.
+	 */
+	public const string TRANSIENT_LOCK = 'image_socialiser_regen_';
 	
 	/**
 	 * Initialize the REST routes.
@@ -123,7 +138,22 @@ final class Rest_Controller {
 	 */
 	public static function run_regenerate( WP_REST_Request $request ): WP_REST_Response {
 		$post_id = (int) $request['id'];
-		( new Generator() )->generate( $post_id );
+		$lock = self::TRANSIENT_LOCK . $post_id;
+		
+		// the render runs synchronously, so a held button or a retry
+		// loop would queue one full render per request; collapse
+		// repeats within the lock window into the current state
+		if ( \get_transient( $lock ) !== false ) {
+			return new WP_REST_Response( self::get_status_payload( $post_id ) );
+		}
+		
+		\set_transient( $lock, 1, self::LOCK_SECONDS );
+		
+		try {
+			( new Generator() )->generate( $post_id );
+		} finally {
+			\delete_transient( $lock );
+		}
 		
 		return new WP_REST_Response( self::get_status_payload( $post_id ) );
 	}

@@ -9,6 +9,11 @@ declare(strict_types=1);
 
 use happyhappy\ImageSocialiser\Template\Design_Packs;
 
+// prevent direct file access
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! function_exists( 'image_socialiser_register_design' ) ) {
 	/**
 	 * Register a design pack from its manifest path.
